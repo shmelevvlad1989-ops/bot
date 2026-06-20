@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Admin</title>
+</head>
+<body>
+
+<div class="container">
+
+  <div class="sidebar">
+    <button onclick="openPage('home')">Главная</button>
+    <button onclick="openPage('info')">Инфо</button>
+    <button onclick="openPage('settings')">Настройки</button>
+    <button onclick="openPage('Creator')">Разработчики</button>
+  </div>
+
+  <div class="content">
+    <div id="home" class="page active"> 
+      <h1 class="page-h1">Домашняя страничка</h1>
+
+      
+
+    </div>
+    <div id="info" class="page">
+      <h1><span class="page-h1">Страничка информации</span></h1>
+    
+    
+    
+    </div>
+    <div id="settings" class="page"> 
+      <h1><span class="page-h1">Страничка настроек</span></h1>
+    </div>
+  </div>
+
+</div>
+
+<audio id="clickSound" src="click.mp3"></audio>
+
+<script src="script.js"></script>
+</body>
+</html>
+
