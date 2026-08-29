@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>monte shop</title>
+<title>monte.shop — моды для BeamNG.drive</title>
 <style>
   :root{
     --mono: 'JetBrains Mono', 'Courier New', monospace;
@@ -44,7 +44,7 @@
 
   button { font-family: inherit; cursor: pointer; border: none; outline: none; -webkit-tap-highlight-color: transparent; background: none; color: inherit; }
   button:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
-  input { font-family: inherit; }
+  input, select { font-family: inherit; }
   a { color: inherit; }
 
   /* ===== HEADER ===== */
@@ -95,64 +95,7 @@
   .icon-btn:active { transform: scale(0.9); }
   .icon-btn svg { width: 19px; height: 19px; stroke: var(--ink); }
 
-  .badge {
-    position: absolute; top: 2px; right: 2px;
-    min-width: 16px; height: 16px; padding: 0 4px;
-    border-radius: 999px;
-    background: var(--danger);
-    color: #fff;
-    font-size: 10px; font-weight: 700;
-    display: flex; align-items: center; justify-content: center;
-    transform: scale(0);
-    transition: transform 0.3s cubic-bezier(.34,1.6,.5,1);
-  }
-  .badge.show { transform: scale(1); }
-
-  .search-wrap {
-    margin-left: auto;
-    position: relative;
-    display: flex; align-items: center; gap: 8px;
-    background: var(--bg);
-    border: 1px solid var(--panel-edge);
-    border-radius: 10px;
-    padding: 8px 12px;
-    max-width: 320px;
-    width: 100%;
-    transition: border-color 0.2s ease;
-  }
-  .search-wrap:focus-within { border-color: var(--accent); }
-  .search-wrap svg { width: 16px; height: 16px; stroke: var(--ink-dim); flex: none; }
-  .search-wrap input {
-    border: none; background: transparent; outline: none;
-    color: var(--ink); font-size: 14px; width: 100%;
-  }
-  .search-wrap input::placeholder { color: var(--ink-dim); }
-
-  .suggestions {
-    position: absolute; top: calc(100% + 8px); left: 0; right: 0;
-    background: var(--panel);
-    border: 1px solid var(--panel-edge);
-    border-radius: 12px;
-    overflow: hidden;
-    z-index: 40;
-    box-shadow: 0 12px 28px rgba(0,0,0,0.25);
-    opacity: 0; transform: translateY(-6px);
-    pointer-events: none;
-    transition: opacity 0.18s ease, transform 0.18s ease;
-  }
-  .suggestions.show { opacity: 1; transform: translateY(0); pointer-events: auto; }
-  .suggestion-item {
-    display: flex; align-items: center; justify-content: space-between; gap: 10px;
-    width: 100%;
-    padding: 10px 14px;
-    font-size: 13px;
-    text-align: left;
-    transition: background 0.15s ease;
-  }
-  .suggestion-item:hover { background: var(--accent-dim); }
-  .suggestion-item b { font-weight: 600; }
-  .suggestion-price { color: var(--ink-dim); font-family: var(--mono); font-size: 12px; flex: none; }
-  .suggestion-empty { padding: 12px 14px; font-size: 13px; color: var(--ink-dim); }
+  .header-spacer { margin-left: auto; }
 
   /* ===== DRAWER ===== */
   .overlay {
@@ -209,30 +152,70 @@
   h1 { font-size: 26px; font-weight: 800; letter-spacing: -0.01em; margin: 0 0 6px; }
   .sub { color: var(--ink-dim); font-size: 14px; margin: 0 0 30px; }
 
-  /* product card */
-  .product-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; }
-  .product-card {
-    background: var(--panel);
+  /* ===== HOME / ABOUT ===== */
+  .hero {
+    background: linear-gradient(160deg, var(--accent-dim), transparent 65%);
     border: 1px solid var(--panel-edge);
-    border-radius: 16px;
-    padding: 18px;
-    display: flex; flex-direction: column; gap: 14px;
+    border-radius: 20px;
+    padding: 30px 26px;
+    margin-bottom: 30px;
   }
-  .product-thumb {
-    height: 140px;
-    border-radius: 12px;
+  .hero-kicker {
+    font-family: var(--mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 10px; font-weight: 700;
+  }
+  .hero h1 { font-size: 28px; margin-bottom: 12px; }
+  .hero p { color: var(--ink-dim); font-size: 14px; line-height: 1.6; margin: 0 0 20px; }
+  .hero-cta {
+    font-weight: 700; font-size: 14px;
+    color: var(--accent-ink); background: var(--accent);
+    padding: 12px 22px; border-radius: 12px;
+    display: inline-flex; align-items: center; gap: 8px;
+    transition: transform 0.15s ease;
+  }
+  .hero-cta:active { transform: scale(0.96); }
+  .hero-cta svg { width: 15px; height: 15px; }
+
+  .section-heading {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-dim);
+    margin: 30px 0 12px;
+    padding: 0 2px;
+  }
+
+  .feature-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 14px; }
+  .feature-card {
+    background: var(--panel); border: 1px solid var(--panel-edge);
+    border-radius: 16px; padding: 18px; display: flex; flex-direction: column; gap: 10px;
+  }
+  .feature-icon {
+    width: 42px; height: 42px; border-radius: 12px;
     background: linear-gradient(135deg, var(--accent-dim), transparent);
     display: flex; align-items: center; justify-content: center;
-    position: relative;
   }
-  .product-thumb svg { width: 44px; height: 44px; stroke: var(--accent); }
-  .product-name { font-weight: 700; font-size: 15px; }
-  .product-desc { color: var(--ink-dim); font-size: 13px; line-height: 1.4; }
-  .product-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: auto; }
-  .product-price { font-weight: 800; font-size: 17px; }
+  .feature-icon svg { width: 20px; height: 20px; stroke: var(--accent); }
+  .feature-title { font-weight: 700; font-size: 14px; }
+  .feature-desc { color: var(--ink-dim); font-size: 12.5px; line-height: 1.4; }
 
-  /* category chips */
-  .chip-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 24px; }
+  .studio-card {
+    background: var(--panel); border: 1px solid var(--panel-edge);
+    border-radius: 16px; padding: 20px; margin-top: 26px;
+    display: flex; gap: 16px; align-items: flex-start;
+  }
+  .studio-icon {
+    width: 46px; height: 46px; border-radius: 14px; flex: none;
+    background: linear-gradient(135deg, var(--accent-dim), transparent);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .studio-icon svg { width: 22px; height: 22px; stroke: var(--accent); }
+  .studio-name { font-weight: 800; font-size: 15px; margin-bottom: 4px; }
+  .studio-desc { color: var(--ink-dim); font-size: 13px; line-height: 1.55; }
+
+  /* ===== MOD / FEATURE grid used on Mods view ===== */
+  .chip-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
   .chip {
     font-weight: 600; font-size: 13px;
     padding: 8px 15px;
@@ -246,41 +229,65 @@
   .chip.active { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
   .chip:active { transform: scale(0.95); }
 
-  /* favorite toggle on product thumb */
-  .fav-btn {
-    position: absolute; top: 8px; right: 8px;
-    width: 32px; height: 32px; border-radius: 50%;
-    background: rgba(10,14,22,0.4);
-    display: flex; align-items: center; justify-content: center;
-    transition: transform 0.15s ease, background 0.15s ease;
+  .search-wrap {
+    display: flex; align-items: center; gap: 8px;
+    background: var(--panel);
+    border: 1px solid var(--panel-edge);
+    border-radius: 10px;
+    padding: 10px 14px;
+    margin-bottom: 18px;
+    transition: border-color 0.2s ease;
   }
-  html.light .fav-btn { background: rgba(255,255,255,0.75); }
-  .fav-btn svg { width: 16px; height: 16px; stroke: #fff; fill: none; transition: fill 0.15s ease, stroke 0.15s ease; }
-  html.light .fav-btn svg { stroke: var(--ink-dim); }
-  .fav-btn.active svg { fill: var(--danger); stroke: var(--danger); }
-  .fav-btn:active { transform: scale(0.85); }
-  .fav-btn.pop { animation: fav-pop 0.35s cubic-bezier(.34,1.6,.5,1); }
-  @keyframes fav-pop { 0%{transform:scale(1);} 45%{transform:scale(1.35);} 100%{transform:scale(1);} }
+  .search-wrap:focus-within { border-color: var(--accent); }
+  .search-wrap svg { width: 16px; height: 16px; stroke: var(--ink-dim); flex: none; }
+  .search-wrap input {
+    border: none; background: transparent; outline: none;
+    color: var(--ink); font-size: 14px; width: 100%;
+  }
+  .search-wrap input::placeholder { color: var(--ink-dim); }
 
-  .add-btn {
+  .mod-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; }
+  .mod-card {
+    background: var(--panel);
+    border: 1px solid var(--panel-edge);
+    border-radius: 16px;
+    padding: 18px;
+    display: flex; flex-direction: column; gap: 12px;
+  }
+  .mod-thumb {
+    height: 110px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, var(--accent-dim), transparent);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .mod-thumb svg { width: 38px; height: 38px; stroke: var(--accent); }
+  .mod-name { font-weight: 700; font-size: 15px; }
+  .mod-meta { color: var(--ink-dim); font-size: 12.5px; line-height: 1.4; }
+  .mod-tag {
+    display: inline-block; align-self: flex-start;
+    font-family: var(--mono); font-size: 10.5px; font-weight: 700;
+    letter-spacing: 0.04em; text-transform: uppercase;
+    color: var(--accent); background: var(--accent-dim);
+    padding: 4px 9px; border-radius: 999px;
+  }
+  .mod-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: auto; }
+  .mod-size { font-family: var(--mono); font-size: 12px; color: var(--ink-dim); }
+  .mod-dl {
     font-weight: 700; font-size: 13px;
     color: var(--accent-ink);
     background: var(--accent);
-    padding: 10px 16px;
+    padding: 9px 16px;
     border-radius: 10px;
     display: inline-flex; align-items: center; gap: 8px;
-    overflow: hidden;
+    text-decoration: none;
     transition: transform 0.15s ease;
   }
-  .add-btn:active { transform: scale(0.95); }
-  .add-btn .txt { transition: transform 0.3s cubic-bezier(.5,0,.2,1), opacity 0.25s ease; }
-  .add-btn .check { width: 15px; height: 15px; flex: none; transform: scale(0); transition: transform 0.3s cubic-bezier(.34,1.6,.5,1) 0.05s; }
-  .add-btn.done .txt { transform: translateX(-4px); opacity: 0; width: 0; }
-  .add-btn.done .check { transform: scale(1); }
+  .mod-dl:active { transform: scale(0.95); }
+  .mod-dl svg { width: 14px; height: 14px; }
 
   .empty { color: var(--ink-dim); font-size: 14px; text-align: center; padding: 30px 0; }
 
-  /* settings */
+  /* ===== settings ===== */
   .setting-row {
     display: flex; align-items: center; justify-content: space-between;
     background: var(--panel); border: 1px solid var(--panel-edge);
@@ -311,17 +318,6 @@
   }
   .dev-credit b { color: var(--ink); }
 
-  /* section heading inside settings */
-  .section-heading {
-    font-family: var(--mono);
-    font-size: 11px;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--ink-dim);
-    margin: 30px 0 12px;
-    padding: 0 2px;
-  }
-
   /* project links */
   .project-link {
     display: flex; align-items: center; gap: 14px;
@@ -344,8 +340,82 @@
   .project-arrow { width: 16px; height: 16px; stroke: var(--ink-dim); flex: none; transition: stroke 0.18s ease, transform 0.18s ease; }
   .project-link:hover .project-arrow { stroke: var(--accent); transform: translate(2px,-2px); }
 
+  /* mod management (admin, in settings) */
+  .upload-card {
+    background: var(--panel); border: 1px solid var(--panel-edge);
+    border-radius: 16px; padding: 20px; margin-bottom: 16px;
+  }
+  .upload-field { margin-bottom: 14px; }
+  .upload-field label { display: block; font-size: 12px; color: var(--ink-dim); margin-bottom: 6px; font-weight: 600; }
+  .upload-field input[type="text"],
+  .upload-field select {
+    width: 100%; background: var(--bg); border: 1px solid var(--panel-edge);
+    border-radius: 10px; padding: 12px 14px; color: var(--ink); font-size: 14px;
+    outline: none; transition: border-color 0.15s ease;
+  }
+  .upload-field input[type="text"]:focus, .upload-field select:focus { border-color: var(--accent); }
+  .upload-field input[type="file"] {
+    width: 100%; font-size: 13px; color: var(--ink-dim);
+  }
+  .upload-submit {
+    width: 100%; font-weight: 700; font-size: 15px;
+    color: var(--accent-ink); background: var(--accent);
+    padding: 13px; border-radius: 12px;
+    transition: transform 0.15s ease, opacity 0.15s ease;
+  }
+  .upload-submit:active { transform: scale(0.97); }
+  .upload-submit[disabled] { opacity: 0.6; pointer-events: none; }
+  .upload-progress {
+    margin-top: 12px; height: 6px; border-radius: 999px;
+    background: var(--accent-dim); overflow: hidden; display: none;
+  }
+  .upload-progress-bar { height: 100%; width: 0%; background: var(--accent); transition: width 0.2s ease; }
+  .upload-status { font-size: 12.5px; color: var(--ink-dim); margin-top: 8px; }
+  .upload-error {
+    color: var(--danger); font-size: 13px; margin-bottom: 12px; display: none;
+    background: rgba(255,107,107,0.1); border-radius: 8px; padding: 10px 12px;
+  }
+  .upload-error.show { display: block; }
+
+  /* generic list rows: admin users + mods management */
+  .list-row {
+    display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+    background: var(--panel); border: 1px solid var(--panel-edge);
+    border-radius: 14px; padding: 14px; margin-bottom: 10px;
+  }
+  .list-thumb {
+    width: 44px; height: 44px; border-radius: 10px; flex: none; overflow: hidden;
+    background: linear-gradient(135deg, var(--accent-dim), transparent);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .list-thumb svg { width: 20px; height: 20px; stroke: var(--accent); }
+  .list-thumb img { width: 100%; height: 100%; object-fit: cover; }
+  .list-info { flex: 1 1 160px; min-width: 0; }
+  .list-name { font-weight: 700; font-size: 14px; }
+  .list-meta { color: var(--ink-dim); font-size: 12px; margin-top: 2px; }
+  .list-remove {
+    width: 30px; height: 30px; border-radius: 8px; flex: none;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--ink-dim);
+    transition: background 0.15s ease, color 0.15s ease;
+  }
+  .list-remove:hover { background: var(--accent-dim); color: var(--danger); }
+  .list-remove svg { width: 15px; height: 15px; }
+
+  .role-picks { display: flex; gap: 6px; flex-wrap: wrap; flex-basis: 100%; margin-top: 4px; }
+  .role-pick { padding: 6px 12px; font-size: 12px; }
+
+  /* neon role tag */
+  .role-tag {
+    font-family: var(--mono); font-size: 11px; font-weight: 700;
+    letter-spacing: 0.05em; text-transform: uppercase;
+    display: inline-block; margin-top: 4px;
+  }
+  .role-tag.role-dev { color: #ff4d4d; text-shadow: 0 0 5px rgba(255,77,77,0.85), 0 0 14px rgba(255,77,77,0.5); }
+  .role-tag.role-lead { color: #ffd93d; text-shadow: 0 0 5px rgba(255,217,61,0.85), 0 0 14px rgba(255,217,61,0.5); }
+
   /* profile */
-  .profile-head { display: flex; align-items: center; gap: 14px; margin-bottom: 30px; }
+  .profile-head { display: flex; align-items: center; gap: 14px; margin-bottom: 12px; }
   .avatar {
     width: 54px; height: 54px; border-radius: 50%;
     background: var(--accent-dim);
@@ -376,8 +446,25 @@
   .avatar-spinner svg { width: 20px; height: 20px; stroke: var(--accent); animation: spin 0.8s linear infinite; }
   @keyframes spin { to { transform: rotate(360deg); } }
 
-  .mini-avatar {
-    width: 20px; height: 20px; border-radius: 50%; object-fit: cover; flex: none;
+  .name-row { display: flex; align-items: center; gap: 8px; }
+  .name-edit-btn {
+    width: 26px; height: 26px; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--ink-dim); flex: none;
+    transition: background 0.15s ease, color 0.15s ease;
+  }
+  .name-edit-btn:hover { background: var(--accent-dim); color: var(--accent); }
+  .name-edit-btn svg { width: 14px; height: 14px; }
+
+  .nick-edit-card {
+    background: var(--panel); border: 1px solid var(--panel-edge);
+    border-radius: 14px; padding: 16px; margin-bottom: 20px;
+  }
+  .nick-edit-card .upload-field { margin-bottom: 12px; }
+  .nick-edit-actions { display: flex; gap: 8px; }
+  .nick-cancel-btn {
+    font-weight: 700; font-size: 14px; color: var(--ink-dim);
+    background: var(--accent-dim); padding: 12px 16px; border-radius: 12px;
   }
 
   /* auth forms */
@@ -422,46 +509,6 @@
   }
   .logout-btn:hover { background: rgba(255,107,107,0.15); }
 
-  /* cart */
-  .cart-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
-  .cart-row {
-    display: flex; align-items: center; gap: 14px;
-    background: var(--panel); border: 1px solid var(--panel-edge);
-    border-radius: 14px; padding: 12px 14px;
-  }
-  .cart-thumb {
-    width: 44px; height: 44px; border-radius: 10px; flex: none;
-    background: linear-gradient(135deg, var(--accent-dim), transparent);
-    display: flex; align-items: center; justify-content: center;
-  }
-  .cart-thumb svg { width: 20px; height: 20px; stroke: var(--accent); }
-  .cart-info { flex: 1; min-width: 0; }
-  .cart-name { font-weight: 700; font-size: 14px; }
-  .cart-meta { color: var(--ink-dim); font-size: 12px; margin-top: 2px; }
-  .cart-subtotal { font-weight: 800; font-size: 14px; flex: none; }
-  .qty-stepper {
-    display: flex; align-items: center; gap: 2px; flex: none;
-    background: var(--bg); border: 1px solid var(--panel-edge);
-    border-radius: 9px; padding: 3px;
-  }
-  .qty-btn {
-    width: 24px; height: 24px; border-radius: 6px;
-    display: flex; align-items: center; justify-content: center;
-    color: var(--ink-dim);
-    transition: background 0.15s ease, color 0.15s ease;
-  }
-  .qty-btn:hover { background: var(--accent-dim); color: var(--accent); }
-  .qty-btn svg { width: 12px; height: 12px; }
-  .qty-val { font-family: var(--mono); font-size: 13px; font-weight: 600; min-width: 20px; text-align: center; }
-  .cart-remove {
-    width: 28px; height: 28px; border-radius: 8px; flex: none;
-    display: flex; align-items: center; justify-content: center;
-    color: var(--ink-dim);
-    transition: background 0.15s ease, color 0.15s ease;
-  }
-  .cart-remove:hover { background: var(--accent-dim); color: var(--danger); }
-  .cart-remove svg { width: 15px; height: 15px; }
-
   .cart-total {
     display: flex; align-items: center; justify-content: space-between;
     background: var(--panel); border: 1px solid var(--panel-edge);
@@ -469,118 +516,6 @@
   }
   .cart-total-label { font-size: 14px; color: var(--ink-dim); }
   .cart-total-sum { font-size: 22px; font-weight: 800; color: var(--accent); }
-
-  .pay-btn {
-    width: 100%;
-    margin-top: 14px;
-    font-weight: 700; font-size: 15px;
-    color: var(--accent-ink);
-    background: var(--accent);
-    padding: 15px 20px;
-    border-radius: 14px;
-    display: flex; align-items: center; justify-content: center; gap: 10px;
-    overflow: hidden;
-    transition: transform 0.15s ease, background 0.3s ease;
-  }
-  .pay-btn:active { transform: scale(0.97); }
-  .pay-btn .txt { transition: transform 0.3s cubic-bezier(.5,0,.2,1), opacity 0.25s ease; }
-  .pay-btn .check {
-    width: 18px; height: 18px; flex: none;
-    transform: scale(0) rotate(-20deg);
-    transition: transform 0.4s cubic-bezier(.34,1.6,.5,1) 0.08s;
-  }
-  .pay-btn.done { background: var(--mint, #59e0b0); pointer-events: none; }
-  .pay-btn.done .txt { transform: translateX(-8px); opacity: 0; width: 0; }
-  .pay-btn.done .check { transform: scale(1) rotate(0deg); }
-
-  .paid-note {
-    text-align: center; font-size: 13px; color: var(--ink-dim);
-    margin-top: 12px; opacity: 0; transform: translateY(4px);
-    transition: opacity 0.3s ease, transform 0.3s ease;
-  }
-  .paid-note.show { opacity: 1; transform: translateY(0); }
-
-  /* ===== SUCCESS STATE ===== */
-  .success-block {
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    padding: 50px 20px 30px;
-    opacity: 0; transform: translateY(14px) scale(0.98);
-    pointer-events: none;
-    transition: opacity 0.45s ease, transform 0.45s cubic-bezier(.3,.9,.3,1.2);
-  }
-  .success-block.show { opacity: 1; transform: translateY(0) scale(1); pointer-events: auto; }
-
-  .success-circle-wrap { position: relative; width: 100px; height: 100px; margin-bottom: 26px; }
-
-  .success-circle-wrap svg { width: 100px; height: 100px; overflow: visible; }
-  .success-ring-bg { fill: var(--accent-dim); }
-  .success-ring {
-    fill: none; stroke: var(--accent); stroke-width: 4; stroke-linecap: round;
-    transform: rotate(-90deg); transform-origin: 50px 50px;
-    stroke-dasharray: 251.2; stroke-dashoffset: 251.2;
-    transition: stroke-dashoffset 0.7s cubic-bezier(.5,0,.15,1) 0.05s;
-  }
-  .success-block.show .success-ring { stroke-dashoffset: 0; }
-  .success-tick {
-    fill: none; stroke: var(--accent); stroke-width: 5; stroke-linecap: round; stroke-linejoin: round;
-    stroke-dasharray: 40; stroke-dashoffset: 40;
-    transition: stroke-dashoffset 0.35s ease 0.55s;
-  }
-  .success-block.show .success-tick { stroke-dashoffset: 0; }
-
-  .confetti { position: absolute; inset: 0; pointer-events: none; }
-  .confetti span {
-    position: absolute; top: 50%; left: 50%;
-    width: 7px; height: 7px; border-radius: 2px;
-    opacity: 0; transform: translate(-50%, -50%) scale(0.4);
-  }
-  .success-block.show .confetti span { animation: confetti-burst 0.85s cubic-bezier(.2,.7,.25,1) forwards; animation-delay: 0.5s; }
-  .confetti span:nth-child(1) { background: var(--accent); --cx: -46px; --cy: -58px; --cr: -50deg; }
-  .confetti span:nth-child(2) { background: #ffd166; --cx: 50px; --cy: -50px; --cr: 60deg; }
-  .confetti span:nth-child(3) { background: #59e0b0; --cx: -60px; --cy: 10px; --cr: -110deg; animation-delay: 0.56s !important; }
-  .confetti span:nth-child(4) { background: #ff6b6b; --cx: 58px; --cy: 18px; --cr: 120deg; animation-delay: 0.53s !important; }
-  .confetti span:nth-child(5) { background: var(--accent); --cx: -20px; --cy: 62px; --cr: -30deg; animation-delay: 0.58s !important; }
-  .confetti span:nth-child(6) { background: #ffd166; --cx: 24px; --cy: 64px; --cr: 40deg; animation-delay: 0.6s !important; }
-  .confetti span:nth-child(7) { background: #59e0b0; --cx: -8px; --cy: -70px; --cr: -20deg; animation-delay: 0.52s !important; }
-  .confetti span:nth-child(8) { background: #ff6b6b; --cx: 6px; --cy: -68px; --cr: 15deg; animation-delay: 0.62s !important; }
-
-  @keyframes confetti-burst {
-    0% { opacity: 0; transform: translate(-50%, -50%) scale(0.4) rotate(0deg); }
-    18% { opacity: 1; }
-    100% {
-      opacity: 0;
-      transform: translate(calc(-50% + var(--cx)), calc(-50% + var(--cy))) scale(1) rotate(var(--cr));
-    }
-  }
-
-  .success-title {
-    font-size: 21px; font-weight: 800; letter-spacing: -0.01em;
-    margin-bottom: 6px;
-    opacity: 0; transform: translateY(6px);
-    transition: opacity 0.4s ease 0.35s, transform 0.4s ease 0.35s;
-  }
-  .success-block.show .success-title { opacity: 1; transform: translateY(0); }
-
-  .success-sub {
-    color: var(--ink-dim); font-size: 14px; text-align: center; max-width: 320px; line-height: 1.5;
-    margin-bottom: 26px;
-    opacity: 0; transform: translateY(6px);
-    transition: opacity 0.4s ease 0.42s, transform 0.4s ease 0.42s;
-  }
-  .success-block.show .success-sub { opacity: 1; transform: translateY(0); }
-
-  .success-btn {
-    font-weight: 700; font-size: 14px;
-    color: var(--accent);
-    background: var(--accent-dim);
-    padding: 12px 22px;
-    border-radius: 12px;
-    opacity: 0; transform: translateY(6px);
-    transition: opacity 0.4s ease 0.48s, transform 0.4s ease 0.48s, background 0.15s ease, transform 0.15s ease;
-  }
-  .success-block.show .success-btn { opacity: 1; transform: translateY(0); }
-  .success-btn:hover { background: var(--accent); color: var(--accent-ink); }
-  .success-btn:active { transform: scale(0.96); }
 
   @media (prefers-reduced-motion: reduce) {
     * { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
@@ -597,9 +532,9 @@
       <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/></svg>
       Главная
     </button>
-    <button class="drawer-item" data-view="favorites">
-      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 00-7.8 0L12 5.6l-1-1a5.5 5.5 0 00-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 000-7.8z"/></svg>
-      Избранное
+    <button class="drawer-item" data-view="mods">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8V6a2 2 0 00-2-2H5a2 2 0 00-2 2v2M3 8l9 5 9-5M3 8v10a2 2 0 002 2h14a2 2 0 002-2V8"/></svg>
+      Моды
     </button>
     <button class="drawer-item" data-view="settings">
       <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 00.34 1.87l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.7 1.7 0 00-1.87-.34 1.7 1.7 0 00-1 1.55V21a2 2 0 11-4 0v-.09a1.7 1.7 0 00-1-1.55 1.7 1.7 0 00-1.87.34l-.06.06a2 2 0 11-2.83-2.83l.06-.06A1.7 1.7 0 004.6 15a1.7 1.7 0 00-1.55-1H3a2 2 0 110-4h.09A1.7 1.7 0 004.6 9a1.7 1.7 0 00-.34-1.87l-.06-.06a2 2 0 112.83-2.83l.06.06A1.7 1.7 0 009 4.6a1.7 1.7 0 001-1.55V3a2 2 0 114 0v.09a1.7 1.7 0 001 1.55 1.7 1.7 0 001.87-.34l.06-.06a2 2 0 112.83 2.83l-.06.06A1.7 1.7 0 0019.4 9a1.7 1.7 0 001.55 1H21a2 2 0 110 4h-.09a1.7 1.7 0 00-1.55 1z"/></svg>
@@ -612,41 +547,90 @@
   <button class="burger" id="burgerBtn" aria-label="Меню"><span></span><span></span><span></span></button>
   <div class="logo">monte<span>.shop</span></div>
 
-  <button class="icon-btn" id="cartBtn" aria-label="Корзина">
-    <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6"/></svg>
-    <span class="badge" id="cartBadge">0</span>
-  </button>
+  <div class="header-spacer"></div>
 
-  <button class="icon-btn" id="favBtn" aria-label="Избранное">
-    <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 00-7.8 0L12 5.6l-1-1a5.5 5.5 0 00-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 000-7.8z"/></svg>
-    <span class="badge" id="favBadge">0</span>
+  <button class="icon-btn" id="modsHeaderBtn" aria-label="Моды">
+    <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8V6a2 2 0 00-2-2H5a2 2 0 00-2 2v2M3 8l9 5 9-5M3 8v10a2 2 0 002 2h14a2 2 0 002-2V8"/></svg>
   </button>
 
   <button class="icon-btn" id="profileBtn" aria-label="Профиль">
     <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
   </button>
-
-  <div class="search-wrap">
-    <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
-    <input type="text" id="searchInput" placeholder="Найти товар..." autocomplete="off">
-    <div class="suggestions" id="suggestions"></div>
-  </div>
 </header>
 
 <main>
 
-  <!-- HOME -->
+  <!-- HOME / ABOUT -->
   <section class="view active" id="view-home">
-    <h1>Каталог</h1>
-    <p class="sub">Начните вводить название в поиске — покажем похожие товары.</p>
-    <div class="chip-row" id="categoryChips">
-      <button class="chip active" data-cat="all">Все</button>
-      <button class="chip" data-cat="audio">Звук</button>
-      <button class="chip" data-cat="gadgets">Гаджеты</button>
-      <button class="chip" data-cat="accessories">Аксессуары</button>
+    <div class="hero">
+      <div class="hero-kicker">BeamNG.drive · моды</div>
+      <h1>monte.shop</h1>
+      <p>Мы делаем моды для BeamNG.drive: ливреи ДПС, мигалки, СГУ (спецсигналы), автомобили и винилы. Всё, что мы выпускаем, можно скачать в разделе «Моды» — бесплатно и без регистрации.</p>
+      <button class="hero-cta" data-goto="mods">
+        Смотреть моды
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </button>
     </div>
-    <div class="product-grid" id="productGrid"></div>
-    <div class="empty" id="noResults" style="display:none;">Ничего не найдено</div>
+
+    <div class="section-heading" style="margin-top:0;">Чем мы занимаемся</div>
+    <div class="feature-grid">
+      <div class="feature-card">
+        <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 17h14M5 17a2 2 0 01-2-2v-3l2-5h10l2 5v3a2 2 0 01-2 2M5 17v2a1 1 0 001 1h1a1 1 0 001-1v-2m8 0v2a1 1 0 001 1h1a1 1 0 001-1v-2"/><circle cx="7.5" cy="14.5" r="1"/><circle cx="16.5" cy="14.5" r="1"/></svg></div>
+        <div class="feature-title">ДПС</div>
+        <div class="feature-desc">Ливреи и комплекты патрульных автомобилей.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a5 5 0 015 5c0 3-2 4-2 7H9c0-3-2-4-2-7a5 5 0 015-5z"/><path d="M9 18h6M10 21h4"/></svg></div>
+        <div class="feature-title">Мигалки</div>
+        <div class="feature-desc">Проблесковые маячки и light-бары под разные кузова.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l19-2-4 9H7z"/><path d="M3 11l4 8h5"/></svg></div>
+        <div class="feature-title">СГУ</div>
+        <div class="feature-desc">Специальные звуковые сигналы и сирены.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="9" rx="2"/><path d="M7 8V6a2 2 0 012-2h6a2 2 0 012 2v2M7 17v2M17 17v2"/></svg></div>
+        <div class="feature-title">Автомобили</div>
+        <div class="feature-desc">Готовые машины и переработанные модели.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v16H4z"/><path d="M4 12h16M12 4v16"/></svg></div>
+        <div class="feature-title">Винилы</div>
+        <div class="feature-desc">Наклейки и цветовые схемы кузова.</div>
+      </div>
+    </div>
+
+    <div class="studio-card">
+      <div class="studio-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3 7h7l-5.5 4.5L18.5 21 12 16.5 5.5 21l2-7.5L2 9h7z"/></svg></div>
+      <div>
+        <div class="studio-name">Monte and Network</div>
+        <div class="studio-desc">Разработчики этого сайта и всех модов, которые здесь публикуются. Мы небольшая команда, делающая контент для BeamNG.drive по тематике полиции и спецтранспорта.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MODS (public) -->
+  <section class="view" id="view-mods">
+    <h1>Моды</h1>
+    <p class="sub">Все моды для BeamNG.drive, которые мы выпустили.</p>
+
+    <div class="search-wrap">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+      <input type="text" id="modSearchInput" placeholder="Найти мод..." autocomplete="off">
+    </div>
+
+    <div class="chip-row" id="modCategoryChips">
+      <button class="chip active" data-cat="all">Все</button>
+      <button class="chip" data-cat="dps">ДПС</button>
+      <button class="chip" data-cat="lights">Мигалки</button>
+      <button class="chip" data-cat="sgu">СГУ</button>
+      <button class="chip" data-cat="cars">Автомобили</button>
+      <button class="chip" data-cat="vinyls">Винилы</button>
+    </div>
+
+    <div class="mod-grid" id="modGrid"></div>
+    <div class="empty" id="modEmpty" style="display:none;">Моды пока не загружены</div>
   </section>
 
   <!-- SETTINGS -->
@@ -664,6 +648,40 @@
           <svg id="themeIcon" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
         </span>
       </button>
+    </div>
+
+    <!-- admin-only mod management -->
+    <div id="modsAdminSection" style="display:none;">
+      <div class="section-heading">Моды — управление</div>
+
+      <div class="upload-card">
+        <div class="upload-error" id="uploadError"></div>
+        <form id="uploadForm">
+          <div class="upload-field">
+            <label>Название мода</label>
+            <input type="text" id="modNameInput" placeholder="Например: Ford Crown Victoria ДПС" required maxlength="60">
+          </div>
+          <div class="upload-field">
+            <label>Категория</label>
+            <select id="modCategoryInput">
+              <option value="dps">ДПС</option>
+              <option value="lights">Мигалки</option>
+              <option value="sgu">СГУ</option>
+              <option value="cars">Автомобили</option>
+              <option value="vinyls">Винилы</option>
+            </select>
+          </div>
+          <div class="upload-field">
+            <label>Файл мода (.zip)</label>
+            <input type="file" id="modFileInput" accept=".zip" required>
+          </div>
+          <button type="submit" class="upload-submit" id="uploadSubmitBtn">Загрузить мод</button>
+          <div class="upload-progress" id="uploadProgress"><div class="upload-progress-bar" id="uploadProgressBar"></div></div>
+          <div class="upload-status" id="uploadStatus"></div>
+        </form>
+      </div>
+
+      <div id="modsManageList"></div>
     </div>
 
     <div class="section-heading">Проекты</div>
@@ -701,7 +719,7 @@
       <svg class="project-arrow" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M7 7h10v10"/></svg>
     </a>
 
-    <div class="dev-credit">разработчик: <b>monte</b></div>
+    <div class="dev-credit">разработчик: <b>Monte and Network</b></div>
   </section>
 
   <!-- PROFILE -->
@@ -710,7 +728,7 @@
     <!-- logged out: login / register -->
     <div id="authBlock">
       <h1>Профиль</h1>
-      <p class="sub">Войдите или создайте аккаунт, чтобы видеть историю заказов.</p>
+      <p class="sub">Войдите или создайте аккаунт.</p>
       <div class="auth-card">
         <div class="auth-tabs">
           <button class="auth-tab active" data-tab="login">Вход</button>
@@ -730,7 +748,7 @@
       </div>
     </div>
 
-    <!-- logged in: account + orders + admin -->
+    <!-- logged in: account + admin -->
     <div id="accountBlock" style="display:none;">
       <div class="profile-head">
         <div class="avatar avatar-editable" id="avatarWrap">
@@ -745,177 +763,45 @@
           <input type="file" id="avatarInput" accept="image/*" style="display:none;">
         </div>
         <div>
-          <h1 style="margin-bottom:2px;" id="accountEmail">—</h1>
-          <p class="sub" style="margin:0;" id="accountJoined">—</p>
+          <div class="name-row">
+            <h1 style="margin-bottom:2px;" id="accountName">—</h1>
+            <button class="name-edit-btn" id="editNickBtn" aria-label="Изменить никнейм">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.83 2.83 0 114 4L7.5 20.5 2 22l1.5-5.5z"/></svg>
+            </button>
+          </div>
+          <div class="role-tag" id="accountRole" style="display:none;"></div>
+          <p class="sub" style="margin:4px 0 0;" id="accountJoined">—</p>
         </div>
       </div>
 
-      <div class="section-heading" style="margin-top:0;">Заказы</div>
-      <div class="empty">У вас пока нет заказов</div>
+      <div class="nick-edit-card" id="nickEditCard" style="display:none;">
+        <div class="upload-field">
+          <label>Никнейм</label>
+          <input type="text" id="nickInput" maxlength="24" placeholder="Ваш никнейм">
+        </div>
+        <div class="nick-edit-actions">
+          <button class="auth-submit" id="saveNickBtn" style="flex:1;">Сохранить</button>
+          <button class="nick-cancel-btn" id="cancelNickBtn" type="button">Отмена</button>
+        </div>
+      </div>
 
       <button class="logout-btn" id="logoutBtn">Выйти из аккаунта</button>
 
       <div id="adminSection" style="display:none;">
-        <div class="section-heading">Админ-панель</div>
+        <div class="section-heading">Админ-панель · пользователи и роли</div>
         <div class="cart-total" style="margin-bottom:14px;">
           <div class="cart-total-label">Всего зарегистрировано</div>
           <div class="cart-total-sum" id="adminUserCount">0</div>
         </div>
-        <div class="cart-list" id="adminUserList"></div>
+        <div id="adminUserList"></div>
       </div>
-    </div>
-  </section>
-
-  <!-- FAVORITES -->
-  <section class="view" id="view-favorites">
-    <h1>Избранное</h1>
-    <p class="sub">Товары, которые вы отметили сердечком.</p>
-    <div class="product-grid" id="favGrid"></div>
-    <div class="empty" id="favEmpty" style="display:none;">Пока ничего не добавлено</div>
-  </section>
-
-  <!-- CART -->
-  <section class="view" id="view-cart">
-    <div id="cartMain">
-      <h1>Корзина</h1>
-      <p class="sub">Товары, которые вы добавили.</p>
-      <div class="cart-list" id="cartList"></div>
-      <div class="empty" id="cartEmpty" style="display:none;">Ваша корзина пуста</div>
-      <div class="cart-total" id="cartTotalRow" style="display:none;">
-        <div class="cart-total-label">Итого</div>
-        <div class="cart-total-sum" id="cartTotalSum">0 ₴</div>
-      </div>
-      <button class="pay-btn" id="payBtn" style="display:none;">
-        <span class="txt">Оплатить</span>
-        <svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5L9.5 18L20 6"/></svg>
-      </button>
-    </div>
-
-    <div class="success-block" id="successBlock">
-      <div class="success-circle-wrap">
-        <svg viewBox="0 0 100 100">
-          <circle class="success-ring-bg" cx="50" cy="50" r="40"/>
-          <circle class="success-ring" cx="50" cy="50" r="40"/>
-          <path class="success-tick" d="M32 51l12 12 24-26"/>
-        </svg>
-        <div class="confetti">
-          <span></span><span></span><span></span><span></span>
-          <span></span><span></span><span></span><span></span>
-        </div>
-      </div>
-      <div class="success-title">Заказ оплачен!</div>
-      <div class="success-sub">Спасибо за покупку. Мы уже собираем ваш заказ — детали пришлём в профиль.</div>
-      <button class="success-btn" id="successContinue">Продолжить покупки</button>
     </div>
   </section>
 
 </main>
 
 <script>
-  // ---- product catalog (test data) ----
-  const PRODUCTS = [
-    { id: 1, name: 'Беспроводные наушники', desc: 'Шумоподавление, 30 часов автономности.', price: 1290, cat: 'audio' },
-    { id: 2, name: 'Накладные наушники', desc: 'Объёмный звук, мягкие амбушюры.', price: 1490, cat: 'audio' },
-    { id: 3, name: 'Умные часы', desc: 'Пульс, сон, уведомления с телефона.', price: 2190, cat: 'gadgets' },
-    { id: 4, name: 'Портативная колонка', desc: 'Защита от воды, 12 часов работы.', price: 990, cat: 'audio' },
-    { id: 5, name: 'Беспроводное зарядное устройство', desc: 'Быстрая зарядка 15 Вт.', price: 590, cat: 'gadgets' },
-    { id: 6, name: 'Чехол для телефона', desc: 'Противоударный силикон.', price: 290, cat: 'accessories' },
-  ];
-
-  const PRODUCT_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18v-6a9 9 0 0118 0v6"/><path d="M21 19a2 2 0 01-2 2h-1a2 2 0 01-2-2v-3a2 2 0 012-2h3zM3 19a2 2 0 002 2h1a2 2 0 002-2v-3a2 2 0 00-2-2H3z"/></svg>';
-  const CHECK_ICON = '<svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5L9.5 18L20 6"/></svg>';
-  const HEART_ICON = '<svg viewBox="0 0 24 24"><path d="M20.8 4.6a5.5 5.5 0 00-7.8 0L12 5.6l-1-1a5.5 5.5 0 00-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 000-7.8z"/></svg>';
-
-  // ---- persisted state (cart + favorites) ----
-  function loadJSON(key, fallback){
-    try {
-      const raw = localStorage.getItem(key);
-      return raw ? JSON.parse(raw) : fallback;
-    } catch(e){ return fallback; }
-  }
-  function saveJSON(key, value){
-    try { localStorage.setItem(key, JSON.stringify(value)); } catch(e){ /* ignore */ }
-  }
-
-  // ---- favorites state (persisted) ----
-  const favBadge = document.getElementById('favBadge');
-  let favorites = new Set(loadJSON('monte_favs', []));
-
-  function toggleFavorite(id){
-    if (favorites.has(id)) favorites.delete(id);
-    else favorites.add(id);
-    saveJSON('monte_favs', Array.from(favorites));
-    updateFavBadge();
-    renderProducts(currentList());
-    renderFavorites();
-    const btn = document.querySelector(`[data-fav="${id}"].active`) || document.querySelector(`[data-fav="${id}"]`);
-    if (btn) { btn.classList.add('pop'); setTimeout(() => btn.classList.remove('pop'), 350); }
-  }
-  function updateFavBadge(){
-    favBadge.textContent = favorites.size;
-    favBadge.classList.toggle('show', favorites.size > 0);
-  }
-  updateFavBadge();
-
-  function formatPrice(n){ return n.toLocaleString('uk-UA') + ' \u20b4'; }
-
-  // ---- render product cards (used by catalog and favorites) ----
-  const productGrid = document.getElementById('productGrid');
-  const noResults = document.getElementById('noResults');
-  const favGrid = document.getElementById('favGrid');
-  const favEmpty = document.getElementById('favEmpty');
-
-  function cardHTML(p){
-    const isFav = favorites.has(p.id);
-    return `
-      <div class="product-card" data-id="${p.id}">
-        <div class="product-thumb">
-          ${PRODUCT_ICON}
-          <button class="fav-btn${isFav ? ' active' : ''}" data-fav="${p.id}" aria-label="В избранное">${HEART_ICON}</button>
-        </div>
-        <div class="product-name">${p.name}</div>
-        <div class="product-desc">${p.desc}</div>
-        <div class="product-row">
-          <div class="product-price">${formatPrice(p.price)}</div>
-          <button class="add-btn" data-add="${p.id}">
-            <span class="txt">В корзину</span>
-            ${CHECK_ICON}
-          </button>
-        </div>
-      </div>
-    `;
-  }
-
-  function renderProducts(list){
-    productGrid.innerHTML = list.map(cardHTML).join('');
-    noResults.style.display = list.length ? 'none' : 'block';
-  }
-
-  function renderFavorites(){
-    const list = PRODUCTS.filter(p => favorites.has(p.id));
-    favGrid.innerHTML = list.map(cardHTML).join('');
-    favEmpty.style.display = list.length ? 'none' : 'block';
-  }
-
-  renderProducts(PRODUCTS);
-
-  function handleGridClick(e){
-    const addBtn = e.target.closest('[data-add]');
-    if (addBtn){
-      addToCart(Number(addBtn.dataset.add));
-      addBtn.classList.add('done');
-      setTimeout(() => addBtn.classList.remove('done'), 1400);
-      return;
-    }
-    const favBtn = e.target.closest('[data-fav]');
-    if (favBtn){
-      toggleFavorite(Number(favBtn.dataset.fav));
-    }
-  }
-  productGrid.addEventListener('click', handleGridClick);
-  favGrid.addEventListener('click', handleGridClick);
-
-  // ---- navigation ----
+  // ---- static UI: nav, drawer, theme (no Firebase needed) ----
   const burgerBtn = document.getElementById('burgerBtn');
   const drawer = document.getElementById('drawer');
   const overlay = document.getElementById('overlay');
@@ -940,8 +826,6 @@
   function showView(name){
     views.forEach(v => v.classList.toggle('active', v.id === 'view-' + name));
     drawerItems.forEach(i => i.classList.toggle('active', i.dataset.view === name));
-    if (name === 'cart') renderCart();
-    if (name === 'favorites') renderFavorites();
   }
 
   drawerItems.forEach(item => {
@@ -952,187 +836,9 @@
   });
 
   document.getElementById('profileBtn').addEventListener('click', () => showView('profile'));
-  document.getElementById('cartBtn').addEventListener('click', () => showView('cart'));
-  document.getElementById('favBtn').addEventListener('click', () => showView('favorites'));
-
-  // ---- cart state ----
-  const cartBadge = document.getElementById('cartBadge');
-  let cart = loadJSON('monte_cart', {}); // { productId: qty }
-
-  function addToCart(id){
-    cart[id] = (cart[id] || 0) + 1;
-    saveJSON('monte_cart', cart);
-    updateBadge();
-  }
-  function removeFromCart(id){
-    delete cart[id];
-    saveJSON('monte_cart', cart);
-    updateBadge();
-    renderCart();
-  }
-  function setQty(id, qty){
-    if (qty <= 0){ removeFromCart(id); return; }
-    cart[id] = qty;
-    saveJSON('monte_cart', cart);
-    updateBadge();
-    renderCart();
-  }
-  function updateBadge(){
-    const total = Object.values(cart).reduce((a, b) => a + b, 0);
-    cartBadge.textContent = total;
-    cartBadge.classList.toggle('show', total > 0);
-  }
-  updateBadge();
-
-  const cartMain = document.getElementById('cartMain');
-  const cartList = document.getElementById('cartList');
-  const cartEmpty = document.getElementById('cartEmpty');
-  const cartTotalRow = document.getElementById('cartTotalRow');
-  const cartTotalSum = document.getElementById('cartTotalSum');
-  const payBtn = document.getElementById('payBtn');
-  const successBlock = document.getElementById('successBlock');
-  const successContinue = document.getElementById('successContinue');
-
-  function renderCart(){
-    successBlock.classList.remove('show');
-    cartMain.style.display = '';
-    const ids = Object.keys(cart);
-    if (!ids.length){
-      cartList.innerHTML = '';
-      cartEmpty.style.display = 'block';
-      cartTotalRow.style.display = 'none';
-      payBtn.style.display = 'none';
-      return;
-    }
-    cartEmpty.style.display = 'none';
-    cartTotalRow.style.display = 'flex';
-    payBtn.style.display = 'flex';
-
-    let total = 0;
-    cartList.innerHTML = ids.map(id => {
-      const p = PRODUCTS.find(x => x.id === Number(id));
-      const qty = cart[id];
-      const subtotal = p.price * qty;
-      total += subtotal;
-      return `
-        <div class="cart-row">
-          <div class="cart-thumb">${PRODUCT_ICON}</div>
-          <div class="cart-info">
-            <div class="cart-name">${p.name}</div>
-            <div class="cart-meta">${formatPrice(p.price)} за шт.</div>
-          </div>
-          <div class="qty-stepper">
-            <button class="qty-btn" data-decr="${id}" aria-label="Меньше">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M5 12h14"/></svg>
-            </button>
-            <span class="qty-val">${qty}</span>
-            <button class="qty-btn" data-incr="${id}" aria-label="Больше">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
-            </button>
-          </div>
-          <div class="cart-subtotal">${formatPrice(subtotal)}</div>
-          <button class="cart-remove" data-remove="${id}" aria-label="Убрать">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
-          </button>
-        </div>
-      `;
-    }).join('');
-    cartTotalSum.textContent = formatPrice(total);
-  }
-
-  cartList.addEventListener('click', (e) => {
-    const removeBtn = e.target.closest('[data-remove]');
-    if (removeBtn){ removeFromCart(Number(removeBtn.dataset.remove)); return; }
-    const incrBtn = e.target.closest('[data-incr]');
-    if (incrBtn){ const id = Number(incrBtn.dataset.incr); setQty(id, (cart[id] || 0) + 1); return; }
-    const decrBtn = e.target.closest('[data-decr]');
-    if (decrBtn){ const id = Number(decrBtn.dataset.decr); setQty(id, (cart[id] || 0) - 1); return; }
-  });
-
-  payBtn.addEventListener('click', () => {
-    payBtn.classList.add('done');
-    setTimeout(() => {
-      cart = {};
-      saveJSON('monte_cart', cart);
-      updateBadge();
-      cartMain.style.display = 'none';
-      payBtn.classList.remove('done');
-      successBlock.classList.add('show');
-    }, 900);
-  });
-
-  successContinue.addEventListener('click', () => {
-    showView('home');
-  });
-
-  // ---- search + category filtering ----
-  const searchInput = document.getElementById('searchInput');
-  const suggestions = document.getElementById('suggestions');
-  const categoryChips = document.getElementById('categoryChips');
-  let currentCategory = 'all';
-
-  function matchProducts(q){
-    q = q.trim().toLowerCase();
-    if (!q) return [];
-    return PRODUCTS.filter(p => p.name.toLowerCase().includes(q));
-  }
-
-  function renderSuggestions(q){
-    const matches = matchProducts(q);
-    if (!q.trim()){
-      suggestions.classList.remove('show');
-      suggestions.innerHTML = '';
-      return;
-    }
-    suggestions.innerHTML = matches.length
-      ? matches.slice(0, 5).map(p => `
-          <button class="suggestion-item" data-pick="${p.id}">
-            <b>${p.name}</b>
-            <span class="suggestion-price">${formatPrice(p.price)}</span>
-          </button>
-        `).join('')
-      : `<div class="suggestion-empty">Похожих товаров не найдено</div>`;
-    suggestions.classList.add('show');
-  }
-
-  function currentList(){
-    const q = searchInput.value.trim().toLowerCase();
-    return PRODUCTS.filter(p => {
-      const matchesCat = currentCategory === 'all' || p.cat === currentCategory;
-      const matchesQ = !q || p.name.toLowerCase().includes(q);
-      return matchesCat && matchesQ;
-    });
-  }
-
-  function applyFilter(){
-    renderProducts(currentList());
-  }
-
-  categoryChips.addEventListener('click', (e) => {
-    const chip = e.target.closest('.chip');
-    if (!chip) return;
-    currentCategory = chip.dataset.cat;
-    categoryChips.querySelectorAll('.chip').forEach(c => c.classList.toggle('active', c === chip));
-    applyFilter();
-  });
-
-  searchInput.addEventListener('input', () => {
-    renderSuggestions(searchInput.value);
-    applyFilter();
-  });
-  searchInput.addEventListener('focus', () => renderSuggestions(searchInput.value));
-
-  suggestions.addEventListener('click', (e) => {
-    const item = e.target.closest('[data-pick]');
-    if (!item) return;
-    const p = PRODUCTS.find(x => x.id === Number(item.dataset.pick));
-    searchInput.value = p.name;
-    applyFilter();
-    suggestions.classList.remove('show');
-  });
-
-  document.addEventListener('click', (e) => {
-    if (!e.target.closest('.search-wrap')) suggestions.classList.remove('show');
+  document.getElementById('modsHeaderBtn').addEventListener('click', () => showView('mods'));
+  document.querySelectorAll('[data-goto]').forEach(btn => {
+    btn.addEventListener('click', () => showView(btn.dataset.goto));
   });
 
   // ---- self link (points to this same site) ----
@@ -1157,6 +863,14 @@
     themeLabel.textContent = isLight ? 'Синяя светлая' : 'Синяя тёмная';
     themeIcon.innerHTML = '<path d="' + (isLight ? sunPath : moonPath) + '"/>';
   });
+
+  function formatBytes(n){
+    if (!n && n !== 0) return '';
+    if (n < 1024) return n + ' Б';
+    if (n < 1024*1024) return (n/1024).toFixed(1) + ' КБ';
+    return (n/(1024*1024)).toFixed(1) + ' МБ';
+  }
+  window.__formatBytes = formatBytes;
 </script>
 
 <script type="module">
@@ -1166,8 +880,12 @@
     onAuthStateChanged, signOut
   } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
   import {
-    getFirestore, doc, setDoc, getDoc, collection, getDocs, serverTimestamp
+    getFirestore, doc, setDoc, getDoc, updateDoc, collection, getDocs,
+    addDoc, deleteDoc, onSnapshot, query, orderBy, serverTimestamp
   } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+  import {
+    getStorage, ref, uploadBytesResumable, getDownloadURL, deleteObject
+  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyA9X2DOayWu9qDRr4i9W-GfcHkqGfvS2oY",
@@ -1180,19 +898,33 @@
   };
 
   const ADMIN_EMAIL = 'shmelevvlad1989@gmail.com';
+  const ROLES = {
+    dev:  { label: 'Разработчик', css: 'role-dev' },
+    lead: { label: 'Руководитель', css: 'role-lead' }
+  };
+  const CATEGORY_LABELS = { dps: 'ДПС', lights: 'Мигалки', sgu: 'СГУ', cars: 'Автомобили', vinyls: 'Винилы' };
+  const formatBytes = window.__formatBytes;
 
   const fbApp = initializeApp(firebaseConfig);
   const auth = getAuth(fbApp);
   const db = getFirestore(fbApp);
+  const storage = getStorage(fbApp);
 
-  // ---- DOM refs ----
+  let currentUser = null;
+  let currentUserDoc = null;
+  let isAdmin = false;
+
+  // =========================================================
+  // AUTH
+  // =========================================================
   const authBlock = document.getElementById('authBlock');
   const accountBlock = document.getElementById('accountBlock');
   const authTabs = document.querySelectorAll('.auth-tab');
   const loginForm = document.getElementById('loginForm');
   const registerForm = document.getElementById('registerForm');
   const authError = document.getElementById('authError');
-  const accountEmail = document.getElementById('accountEmail');
+  const accountName = document.getElementById('accountName');
+  const accountRole = document.getElementById('accountRole');
   const accountJoined = document.getElementById('accountJoined');
   const logoutBtn = document.getElementById('logoutBtn');
   const adminSection = document.getElementById('adminSection');
@@ -1202,6 +934,7 @@
   const avatarIcon = document.getElementById('avatarIcon');
   const avatarImg = document.getElementById('avatarImg');
   const avatarInput = document.getElementById('avatarInput');
+  const modsAdminSection = document.getElementById('modsAdminSection');
 
   function showAuthError(msg){
     authError.textContent = msg;
@@ -1263,6 +996,8 @@
       const cred = await createUserWithEmailAndPassword(auth, email, password);
       await setDoc(doc(db, 'users', cred.user.uid), {
         email: email,
+        nickname: '',
+        role: null,
         createdAt: serverTimestamp()
       });
       registerForm.reset();
@@ -1290,6 +1025,14 @@
       avatarImg.style.display = 'none';
       avatarIcon.style.display = '';
     }
+  }
+
+  function renderRoleTag(el, roleId){
+    const role = ROLES[roleId];
+    if (!role) { el.style.display = 'none'; el.textContent = ''; el.className = 'role-tag'; return; }
+    el.style.display = '';
+    el.textContent = role.label;
+    el.className = 'role-tag ' + role.css;
   }
 
   function resizeImageToDataURL(file, maxSize, quality){
@@ -1337,21 +1080,65 @@
     }
   });
 
+  // ---- nickname editing ----
+  const editNickBtn = document.getElementById('editNickBtn');
+  const nickEditCard = document.getElementById('nickEditCard');
+  const nickInput = document.getElementById('nickInput');
+  const saveNickBtn = document.getElementById('saveNickBtn');
+  const cancelNickBtn = document.getElementById('cancelNickBtn');
+
+  editNickBtn.addEventListener('click', () => {
+    nickInput.value = (currentUserDoc && currentUserDoc.nickname) || '';
+    nickEditCard.style.display = '';
+    nickInput.focus();
+  });
+  cancelNickBtn.addEventListener('click', () => { nickEditCard.style.display = 'none'; });
+
+  saveNickBtn.addEventListener('click', async (e) => {
+    e.preventDefault();
+    const user = auth.currentUser;
+    if (!user) return;
+    const value = nickInput.value.trim();
+    if (value && value.length < 2) return;
+    saveNickBtn.disabled = true;
+    try {
+      await setDoc(doc(db, 'users', user.uid), { nickname: value }, { merge: true });
+      currentUserDoc = { ...(currentUserDoc || {}), nickname: value };
+      accountName.textContent = value || user.email;
+      nickEditCard.style.display = 'none';
+    } catch (err) {
+      // keep the card open so they can retry
+    } finally {
+      saveNickBtn.disabled = false;
+    }
+  });
+
+  // =========================================================
+  // ADMIN: users + roles
+  // =========================================================
   async function loadAdminData(){
     const snap = await getDocs(collection(db, 'users'));
     adminUserCount.textContent = snap.size;
     const rows = [];
     snap.forEach(docSnap => {
       const data = docSnap.data();
+      const uid = docSnap.id;
       const thumb = data.photoURL
-        ? `<img class="mini-avatar" src="${data.photoURL}" alt="" style="width:44px;height:44px;">`
-        : `<svg viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>`;
+        ? `<img src="${data.photoURL}" alt="">`
+        : `<svg viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>`;
+      const displayName = data.nickname || data.email || '—';
+      const role = data.role || 'none';
       rows.push(`
-        <div class="cart-row">
-          <div class="cart-thumb">${thumb}</div>
-          <div class="cart-info">
-            <div class="cart-name">${data.email || '—'}</div>
-            <div class="cart-meta">Регистрация: ${formatDate(data.createdAt)}</div>
+        <div class="list-row" data-uid="${uid}">
+          <div class="list-thumb">${thumb}</div>
+          <div class="list-info">
+            <div class="list-name">${displayName}</div>
+            <div class="list-meta">${data.email || ''} · рег. ${formatDate(data.createdAt)}</div>
+          </div>
+          <div class="role-picks">
+            <button class="chip role-pick ${role === 'none' ? 'active' : ''}" data-role="none">Без роли</button>
+            <button class="chip role-pick ${role === 'dev' ? 'active' : ''}" data-role="dev">Разработчик</button>
+            <button class="chip role-pick ${role === 'lead' ? 'active' : ''}" data-role="lead">Руководитель</button>
           </div>
         </div>
       `);
@@ -1359,32 +1146,218 @@
     adminUserList.innerHTML = rows.join('') || '<div class="empty">Пока никого нет</div>';
   }
 
+  adminUserList.addEventListener('click', async (e) => {
+    const btn = e.target.closest('[data-role]');
+    if (!btn) return;
+    const row = e.target.closest('[data-uid]');
+    const uid = row.dataset.uid;
+    const roleId = btn.dataset.role === 'none' ? null : btn.dataset.role;
+    row.querySelectorAll('.role-pick').forEach(b => b.classList.toggle('active', b === btn));
+    try {
+      await updateDoc(doc(db, 'users', uid), { role: roleId });
+    } catch (err) {
+      loadAdminData(); // revert visual state on failure
+    }
+  });
+
+  // =========================================================
+  // MODS: public listing + admin upload/delete
+  // =========================================================
+  const modGrid = document.getElementById('modGrid');
+  const modEmpty = document.getElementById('modEmpty');
+  const modSearchInput = document.getElementById('modSearchInput');
+  const modCategoryChips = document.getElementById('modCategoryChips');
+  const modsManageList = document.getElementById('modsManageList');
+  const uploadForm = document.getElementById('uploadForm');
+  const uploadError = document.getElementById('uploadError');
+  const uploadSubmitBtn = document.getElementById('uploadSubmitBtn');
+  const uploadProgress = document.getElementById('uploadProgress');
+  const uploadProgressBar = document.getElementById('uploadProgressBar');
+  const uploadStatus = document.getElementById('uploadStatus');
+
+  const MOD_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8V6a2 2 0 00-2-2H5a2 2 0 00-2 2v2M3 8l9 5 9-5M3 8v10a2 2 0 002 2h14a2 2 0 002-2V8"/><path d="M12 13v5"/></svg>';
+  const DOWNLOAD_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg>';
+  const TRASH_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg>';
+
+  let allMods = [];
+  let currentModCategory = 'all';
+
+  function modMatchesFilter(m, q){
+    const matchesCat = currentModCategory === 'all' || m.category === currentModCategory;
+    const matchesQ = !q || m.name.toLowerCase().includes(q);
+    return matchesCat && matchesQ;
+  }
+
+  function renderModGrid(){
+    const q = modSearchInput.value.trim().toLowerCase();
+    const list = allMods.filter(m => modMatchesFilter(m, q));
+    modGrid.innerHTML = list.map(m => `
+      <div class="mod-card">
+        <div class="mod-thumb">${MOD_ICON}</div>
+        <span class="mod-tag">${CATEGORY_LABELS[m.category] || m.category}</span>
+        <div class="mod-name">${m.name}</div>
+        <div class="mod-meta">Загружено ${formatDate(m.createdAt)}</div>
+        <div class="mod-row">
+          <span class="mod-size">${formatBytes(m.size)}</span>
+          <a class="mod-dl" href="${m.fileURL}" target="_blank" rel="noopener">${DOWNLOAD_ICON} Скачать</a>
+        </div>
+      </div>
+    `).join('');
+    modEmpty.style.display = list.length ? 'none' : 'block';
+  }
+
+  function renderModsManageList(){
+    modsManageList.innerHTML = allMods.map(m => `
+      <div class="list-row" data-mod-id="${m.id}" data-storage-path="${m.storagePath}">
+        <div class="list-thumb">${MOD_ICON}</div>
+        <div class="list-info">
+          <div class="list-name">${m.name}</div>
+          <div class="list-meta">${CATEGORY_LABELS[m.category] || m.category} · ${formatBytes(m.size)} · ${formatDate(m.createdAt)}</div>
+        </div>
+        <button class="list-remove" data-delete-mod aria-label="Удалить мод">${TRASH_ICON}</button>
+      </div>
+    `).join('') || '<div class="empty">Моды пока не загружены</div>';
+  }
+
+  onSnapshot(query(collection(db, 'mods'), orderBy('createdAt', 'desc')), (snap) => {
+    allMods = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    renderModGrid();
+    renderModsManageList();
+  }, () => {
+    modEmpty.textContent = 'Не удалось загрузить список модов';
+    modEmpty.style.display = 'block';
+  });
+
+  modSearchInput.addEventListener('input', renderModGrid);
+  modCategoryChips.addEventListener('click', (e) => {
+    const chip = e.target.closest('.chip');
+    if (!chip) return;
+    currentModCategory = chip.dataset.cat;
+    modCategoryChips.querySelectorAll('.chip').forEach(c => c.classList.toggle('active', c === chip));
+    renderModGrid();
+  });
+
+  function showUploadError(msg){
+    uploadError.textContent = msg;
+    uploadError.classList.add('show');
+  }
+  function clearUploadError(){
+    uploadError.textContent = '';
+    uploadError.classList.remove('show');
+  }
+
+  uploadForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    clearUploadError();
+    const user = auth.currentUser;
+    if (!user || user.email !== ADMIN_EMAIL) { showUploadError('Загрузка модов доступна только администратору.'); return; }
+
+    const name = document.getElementById('modNameInput').value.trim();
+    const category = document.getElementById('modCategoryInput').value;
+    const fileInput = document.getElementById('modFileInput');
+    const file = fileInput.files[0];
+
+    if (!name) { showUploadError('Укажите название мода.'); return; }
+    if (!file) { showUploadError('Выберите .zip файл.'); return; }
+    if (!file.name.toLowerCase().endsWith('.zip')) { showUploadError('Файл должен быть в формате .zip.'); return; }
+
+    uploadSubmitBtn.disabled = true;
+    uploadProgress.style.display = 'block';
+    uploadProgressBar.style.width = '0%';
+    uploadStatus.textContent = 'Загрузка...';
+
+    const storagePath = `mods/${Date.now()}_${file.name}`;
+    const storageRef = ref(storage, storagePath);
+    const task = uploadBytesResumable(storageRef, file);
+
+    task.on('state_changed', (snap) => {
+      const pct = Math.round((snap.bytesTransferred / snap.totalBytes) * 100);
+      uploadProgressBar.style.width = pct + '%';
+      uploadStatus.textContent = 'Загрузка... ' + pct + '%';
+    }, (err) => {
+      showUploadError('Не удалось загрузить файл. Проверьте правила доступа Firebase Storage.');
+      uploadSubmitBtn.disabled = false;
+      uploadProgress.style.display = 'none';
+      uploadStatus.textContent = '';
+    }, async () => {
+      try {
+        const fileURL = await getDownloadURL(task.snapshot.ref);
+        await addDoc(collection(db, 'mods'), {
+          name, category,
+          fileName: file.name,
+          fileURL, storagePath,
+          size: file.size,
+          uploaderEmail: user.email,
+          createdAt: serverTimestamp()
+        });
+        uploadForm.reset();
+        uploadStatus.textContent = 'Готово! Мод опубликован.';
+      } catch (err) {
+        showUploadError('Файл загружен, но не удалось сохранить запись о моде.');
+      } finally {
+        uploadSubmitBtn.disabled = false;
+        setTimeout(() => { uploadProgress.style.display = 'none'; uploadStatus.textContent = ''; }, 2000);
+      }
+    });
+  });
+
+  modsManageList.addEventListener('click', async (e) => {
+    const btn = e.target.closest('[data-delete-mod]');
+    if (!btn) return;
+    const row = e.target.closest('[data-mod-id]');
+    const modId = row.dataset.modId;
+    const storagePath = row.dataset.storagePath;
+    if (!confirm('Удалить этот мод безвозвратно?')) return;
+    btn.disabled = true;
+    try {
+      await deleteDoc(doc(db, 'mods', modId));
+      if (storagePath) await deleteObject(ref(storage, storagePath)).catch(() => {});
+    } catch (err) {
+      alert('Не удалось удалить мод.');
+      btn.disabled = false;
+    }
+  });
+
+  // =========================================================
+  // AUTH STATE
+  // =========================================================
   onAuthStateChanged(auth, async (user) => {
+    currentUser = user;
     if (user) {
       authBlock.style.display = 'none';
       accountBlock.style.display = '';
-      accountEmail.textContent = user.email;
       setAvatarDisplay(user.photoURL || null);
+      accountName.textContent = user.email;
+      accountRole.style.display = 'none';
       try {
         const snap = await getDoc(doc(db, 'users', user.uid));
-        const data = snap.exists() ? snap.data() : null;
-        accountJoined.textContent = 'В аккаунте с ' + formatDate(data ? data.createdAt : null);
-        if (data && data.photoURL) setAvatarDisplay(data.photoURL);
+        currentUserDoc = snap.exists() ? snap.data() : null;
+        accountName.textContent = (currentUserDoc && currentUserDoc.nickname) || user.email;
+        accountJoined.textContent = 'В аккаунте с ' + formatDate(currentUserDoc ? currentUserDoc.createdAt : null);
+        if (currentUserDoc && currentUserDoc.photoURL) setAvatarDisplay(currentUserDoc.photoURL);
+        renderRoleTag(accountRole, currentUserDoc ? currentUserDoc.role : null);
       } catch (e) {
         accountJoined.textContent = '';
       }
-      if (user.email === ADMIN_EMAIL) {
+
+      isAdmin = user.email === ADMIN_EMAIL;
+      if (isAdmin) {
         adminSection.style.display = '';
+        modsAdminSection.style.display = '';
         adminUserList.innerHTML = '<div class="empty">Загрузка...</div>';
         loadAdminData().catch(() => {
           adminUserList.innerHTML = '<div class="empty">Не удалось загрузить список</div>';
         });
       } else {
         adminSection.style.display = 'none';
+        modsAdminSection.style.display = 'none';
       }
     } else {
       authBlock.style.display = '';
       accountBlock.style.display = 'none';
+      currentUserDoc = null;
+      isAdmin = false;
+      modsAdminSection.style.display = 'none';
     }
   });
 </script>
