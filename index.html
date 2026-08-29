@@ -750,6 +750,35 @@
   .wall-back-btn:hover { color: var(--accent); }
   .wall-back-btn svg { width: 16px; height: 16px; }
 
+  /* user search */
+  .user-search-block { margin-bottom: 22px; }
+  .user-search-results {
+    margin-top: 12px;
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .user-search-results:empty { display: none; }
+  .user-hit {
+    display: flex; align-items: center; gap: 12px;
+    background: var(--panel); border: 1px solid var(--panel-edge);
+    border-radius: 14px; padding: 12px 14px;
+    transition: border-color 0.15s ease, background 0.15s ease;
+  }
+  .user-hit:hover { border-color: var(--accent); background: var(--accent-dim); }
+  .user-hit-avatar {
+    width: 40px; height: 40px; border-radius: 50%; overflow: hidden; flex: none;
+    background: var(--accent-dim);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .user-hit-avatar img { width: 100%; height: 100%; object-fit: cover; }
+  .user-hit-avatar svg { width: 18px; height: 18px; stroke: var(--accent); }
+  .user-hit-info { flex: 1; min-width: 0; }
+  .user-hit-name { font-weight: 700; font-size: 14px; }
+  .user-hit-meta { color: var(--ink-dim); font-size: 12px; margin-top: 2px; }
+  .user-search-hint {
+    color: var(--ink-dim); font-size: 13px; text-align: center;
+    padding: 12px 0 4px;
+  }
+
   @media (prefers-reduced-motion: reduce) {
     * { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
   }
@@ -1026,6 +1055,16 @@
 
         <div id="mutedBanner" class="muted-banner" style="display:none;">
           Вы заглушены администратором и не можете публиковать посты и комментарии.
+        </div>
+
+        <!-- search users by nickname -->
+        <div class="section-heading">Найти пользователя</div>
+        <div class="user-search-block">
+          <div class="search-wrap">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+            <input type="text" id="userSearchInput" placeholder="Поиск по никнейму..." autocomplete="off">
+          </div>
+          <div class="user-search-results" id="userSearchResults"></div>
         </div>
 
         <!-- WALL compose (own) -->
@@ -1481,7 +1520,67 @@
         wallCompose.style.display = isMuted ? 'none' : '';
       }
     }
-  }, () => { /* non-admins may lack read access */ });
+    // refresh search results if query is active
+    if (userSearchInput && userSearchInput.value.trim()) renderUserSearch();
+  }, () => { /* non-admins may lack read access — allow list in rules for search */ });
+
+  // =========================================================
+  // USER SEARCH by nickname (for all logged-in users)
+  // =========================================================
+  const userSearchInput = document.getElementById('userSearchInput');
+  const userSearchResults = document.getElementById('userSearchResults');
+
+  function renderUserSearch(){
+    if (!userSearchResults) return;
+    const q = (userSearchInput.value || '').trim().toLowerCase();
+    if (q.length < 1) {
+      userSearchResults.innerHTML = '';
+      return;
+    }
+    const hits = allUsers.filter(u => {
+      if (currentUser && u.id === currentUser.uid) return false; // skip self
+      const nick = (u.data.nickname || '').toLowerCase();
+      return nick && nick.includes(q);
+    }).slice(0, 12);
+
+    if (!hits.length) {
+      userSearchResults.innerHTML = '<div class="user-search-hint">Никого не найдено. Убедитесь, что у пользователя задан никнейм.</div>';
+      return;
+    }
+
+    userSearchResults.innerHTML = hits.map(u => {
+      const d = u.data;
+      const name = d.nickname || '—';
+      const thumb = d.photoURL
+        ? `<img src="${d.photoURL}" alt="">`
+        : `<svg viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>`;
+      const role = ROLES[d.role];
+      const roleLabel = role ? ` · ${role.label}` : '';
+      return `
+        <div class="user-hit">
+          <div class="user-hit-avatar">${thumb}</div>
+          <div class="user-hit-info">
+            <div class="user-hit-name">${escapeHtml(name)}</div>
+            <div class="user-hit-meta">на сайте с ${formatDate(d.createdAt)}${roleLabel}</div>
+          </div>
+          <button class="view-wall-btn" data-view-wall="${u.id}">Стена</button>
+        </div>
+      `;
+    }).join('');
+  }
+
+  if (userSearchInput) {
+    userSearchInput.addEventListener('input', renderUserSearch);
+  }
+  if (userSearchResults) {
+    userSearchResults.addEventListener('click', (e) => {
+      const btn = e.target.closest('[data-view-wall]');
+      if (!btn) return;
+      userSearchInput.value = '';
+      userSearchResults.innerHTML = '';
+      openUserWall(btn.dataset.viewWall);
+    });
+  }
 
   adminUserList.addEventListener('click', async (e) => {
     const roleBtn = e.target.closest('[data-role]');
