@@ -2091,28 +2091,39 @@
       accountRole.style.display = 'none';
       try {
         let snap = await getDoc(doc(db, 'users', user.uid));
+        // дата создания из Firebase Auth — есть у всех, даже старых аккаунтов
+        const authCreated = user.metadata && user.metadata.creationTime
+          ? new Date(user.metadata.creationTime)
+          : null;
+        const patch = { lastLoginAt: serverTimestamp() };
+
         if (!snap.exists()) {
-          const baseDoc = {
+          await setDoc(doc(db, 'users', user.uid), {
             email: user.email,
             nickname: '',
             role: null,
             muted: false,
-            createdAt: serverTimestamp(),
+            createdAt: authCreated || serverTimestamp(),
             lastLoginAt: serverTimestamp()
-          };
-          await setDoc(doc(db, 'users', user.uid), baseDoc, { merge: true });
-          snap = await getDoc(doc(db, 'users', user.uid));
+          }, { merge: true });
         } else {
-          // фиксируем время входа
-          await setDoc(doc(db, 'users', user.uid), { lastLoginAt: serverTimestamp() }, { merge: true });
+          const data = snap.data() || {};
+          // дописываем createdAt, если его не было при старой регистрации
+          if (!data.createdAt && authCreated) {
+            patch.createdAt = authCreated;
+          }
+          if (!data.email && user.email) {
+            patch.email = user.email;
+          }
+          await setDoc(doc(db, 'users', user.uid), patch, { merge: true });
         }
-        // перечитываем, чтобы lastLoginAt / createdAt были актуальны
+
         snap = await getDoc(doc(db, 'users', user.uid));
         currentUserDoc = snap.exists() ? snap.data() : null;
+        const regTs = (currentUserDoc && currentUserDoc.createdAt) || authCreated;
+        const loginTs = currentUserDoc && currentUserDoc.lastLoginAt;
         accountName.textContent = (currentUserDoc && currentUserDoc.nickname) || user.email;
-        const regStr = formatDateTime(currentUserDoc ? currentUserDoc.createdAt : null);
-        const loginStr = formatDateTime(currentUserDoc ? currentUserDoc.lastLoginAt : null);
-        accountJoined.textContent = (user.email || '') + ' · Рег.: ' + regStr + ' · Вход: ' + loginStr;
+        accountJoined.textContent = (user.email || '') + ' · Рег.: ' + formatDateTime(regTs) + ' · Вход: ' + formatDateTime(loginTs);
         if (currentUserDoc && currentUserDoc.photoURL) setAvatarDisplay(currentUserDoc.photoURL);
         renderRoleTag(accountRole, currentUserDoc ? currentUserDoc.role : null);
         isMuted = !!(currentUserDoc && currentUserDoc.muted);
@@ -2120,7 +2131,10 @@
         wallCompose.style.display = isMuted ? 'none' : '';
       } catch (e) {
         console.error('profile load', e);
-        accountJoined.textContent = user.email || '';
+        const authCreated = user.metadata && user.metadata.creationTime
+          ? formatDateTime(new Date(user.metadata.creationTime))
+          : '—';
+        accountJoined.textContent = (user.email || '') + ' · Рег.: ' + authCreated;
       }
 
       isAdmin = user.email === ADMIN_EMAIL;
