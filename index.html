@@ -354,6 +354,48 @@
   }
   .avatar svg { width: 26px; height: 26px; stroke: var(--accent); }
 
+  /* auth forms */
+  .auth-card {
+    background: var(--panel); border: 1px solid var(--panel-edge);
+    border-radius: 16px; padding: 22px;
+  }
+  .auth-tabs { display: flex; gap: 8px; margin-bottom: 18px; }
+  .auth-tab {
+    flex: 1; text-align: center; padding: 10px;
+    border-radius: 10px; font-weight: 700; font-size: 14px;
+    color: var(--ink-dim); background: var(--bg); border: 1px solid var(--panel-edge);
+    transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+  }
+  .auth-tab.active { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+  .auth-field { margin-bottom: 14px; }
+  .auth-field label { display: block; font-size: 12px; color: var(--ink-dim); margin-bottom: 6px; font-weight: 600; }
+  .auth-field input {
+    width: 100%; background: var(--bg); border: 1px solid var(--panel-edge);
+    border-radius: 10px; padding: 12px 14px; color: var(--ink); font-size: 14px;
+    outline: none; transition: border-color 0.15s ease;
+  }
+  .auth-field input:focus { border-color: var(--accent); }
+  .auth-error {
+    color: var(--danger); font-size: 13px; margin-bottom: 12px; display: none;
+    background: rgba(255,107,107,0.1); border-radius: 8px; padding: 10px 12px;
+  }
+  .auth-error.show { display: block; }
+  .auth-submit {
+    width: 100%; font-weight: 700; font-size: 15px;
+    color: var(--accent-ink); background: var(--accent);
+    padding: 13px; border-radius: 12px;
+    transition: transform 0.15s ease, opacity 0.15s ease;
+  }
+  .auth-submit:active { transform: scale(0.97); }
+  .auth-submit[disabled] { opacity: 0.6; pointer-events: none; }
+
+  .logout-btn {
+    font-weight: 700; font-size: 13px; color: var(--danger);
+    background: var(--accent-dim); padding: 10px 16px; border-radius: 10px;
+    margin-top: 20px; transition: background 0.15s ease;
+  }
+  .logout-btn:hover { background: rgba(255,107,107,0.15); }
+
   /* cart */
   .cart-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
   .cart-row {
@@ -638,16 +680,56 @@
 
   <!-- PROFILE -->
   <section class="view" id="view-profile">
-    <div class="profile-head">
-      <div class="avatar">
-        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-      </div>
-      <div>
-        <h1 style="margin-bottom:2px;">Ваши заказы</h1>
-        <p class="sub" style="margin:0;">История покупок появится здесь</p>
+
+    <!-- logged out: login / register -->
+    <div id="authBlock">
+      <h1>Профиль</h1>
+      <p class="sub">Войдите или создайте аккаунт, чтобы видеть историю заказов.</p>
+      <div class="auth-card">
+        <div class="auth-tabs">
+          <button class="auth-tab active" data-tab="login">Вход</button>
+          <button class="auth-tab" data-tab="register">Регистрация</button>
+        </div>
+        <div class="auth-error" id="authError"></div>
+        <form id="loginForm">
+          <div class="auth-field"><label>Email</label><input type="email" id="loginEmail" required autocomplete="email"></div>
+          <div class="auth-field"><label>Пароль</label><input type="password" id="loginPassword" required autocomplete="current-password"></div>
+          <button type="submit" class="auth-submit">Войти</button>
+        </form>
+        <form id="registerForm" style="display:none;">
+          <div class="auth-field"><label>Email</label><input type="email" id="registerEmail" required autocomplete="email"></div>
+          <div class="auth-field"><label>Пароль (мин. 6 символов)</label><input type="password" id="registerPassword" required minlength="6" autocomplete="new-password"></div>
+          <button type="submit" class="auth-submit">Создать аккаунт</button>
+        </form>
       </div>
     </div>
-    <div class="empty">У вас пока нет заказов</div>
+
+    <!-- logged in: account + orders + admin -->
+    <div id="accountBlock" style="display:none;">
+      <div class="profile-head">
+        <div class="avatar">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </div>
+        <div>
+          <h1 style="margin-bottom:2px;" id="accountEmail">—</h1>
+          <p class="sub" style="margin:0;" id="accountJoined">—</p>
+        </div>
+      </div>
+
+      <div class="section-heading" style="margin-top:0;">Заказы</div>
+      <div class="empty">У вас пока нет заказов</div>
+
+      <button class="logout-btn" id="logoutBtn">Выйти из аккаунта</button>
+
+      <div id="adminSection" style="display:none;">
+        <div class="section-heading">Админ-панель</div>
+        <div class="cart-total" style="margin-bottom:14px;">
+          <div class="cart-total-label">Всего зарегистрировано</div>
+          <div class="cart-total-sum" id="adminUserCount">0</div>
+        </div>
+        <div class="cart-list" id="adminUserList"></div>
+      </div>
+    </div>
   </section>
 
   <!-- FAVORITES -->
@@ -1040,6 +1122,172 @@
     themeSwitch.classList.toggle('on', isLight);
     themeLabel.textContent = isLight ? 'Синяя светлая' : 'Синяя тёмная';
     themeIcon.innerHTML = '<path d="' + (isLight ? sunPath : moonPath) + '"/>';
+  });
+</script>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import {
+    getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword,
+    onAuthStateChanged, signOut
+  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import {
+    getFirestore, doc, setDoc, getDoc, collection, getDocs, serverTimestamp
+  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyA9X2DOayWu9qDRr4i9W-GfcHkqGfvS2oY",
+    authDomain: "monte-shop.firebaseapp.com",
+    projectId: "monte-shop",
+    storageBucket: "monte-shop.firebasestorage.app",
+    messagingSenderId: "606826842258",
+    appId: "1:606826842258:web:55e4a298464f34fc4dbe4b",
+    measurementId: "G-EBTZGQR163"
+  };
+
+  const ADMIN_EMAIL = 'shmelevvlad1989@gmail.com';
+
+  const fbApp = initializeApp(firebaseConfig);
+  const auth = getAuth(fbApp);
+  const db = getFirestore(fbApp);
+
+  // ---- DOM refs ----
+  const authBlock = document.getElementById('authBlock');
+  const accountBlock = document.getElementById('accountBlock');
+  const authTabs = document.querySelectorAll('.auth-tab');
+  const loginForm = document.getElementById('loginForm');
+  const registerForm = document.getElementById('registerForm');
+  const authError = document.getElementById('authError');
+  const accountEmail = document.getElementById('accountEmail');
+  const accountJoined = document.getElementById('accountJoined');
+  const logoutBtn = document.getElementById('logoutBtn');
+  const adminSection = document.getElementById('adminSection');
+  const adminUserCount = document.getElementById('adminUserCount');
+  const adminUserList = document.getElementById('adminUserList');
+
+  function showAuthError(msg){
+    authError.textContent = msg;
+    authError.classList.add('show');
+  }
+  function clearAuthError(){
+    authError.textContent = '';
+    authError.classList.remove('show');
+  }
+
+  authTabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      authTabs.forEach(t => t.classList.toggle('active', t === tab));
+      clearAuthError();
+      const isLogin = tab.dataset.tab === 'login';
+      loginForm.style.display = isLogin ? '' : 'none';
+      registerForm.style.display = isLogin ? 'none' : '';
+    });
+  });
+
+  function authErrorText(code){
+    const map = {
+      'auth/invalid-email': 'Некорректный email.',
+      'auth/user-not-found': 'Пользователь с таким email не найден.',
+      'auth/wrong-password': 'Неверный пароль.',
+      'auth/invalid-credential': 'Неверный email или пароль.',
+      'auth/email-already-in-use': 'Этот email уже зарегистрирован.',
+      'auth/weak-password': 'Пароль должен быть не короче 6 символов.',
+      'auth/too-many-requests': 'Слишком много попыток. Попробуйте позже.'
+    };
+    return map[code] || 'Что-то пошло не так, попробуйте ещё раз.';
+  }
+
+  loginForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    clearAuthError();
+    const email = document.getElementById('loginEmail').value.trim();
+    const password = document.getElementById('loginPassword').value;
+    const btn = loginForm.querySelector('.auth-submit');
+    btn.disabled = true;
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      loginForm.reset();
+    } catch (err) {
+      showAuthError(authErrorText(err.code));
+    } finally {
+      btn.disabled = false;
+    }
+  });
+
+  registerForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    clearAuthError();
+    const email = document.getElementById('registerEmail').value.trim();
+    const password = document.getElementById('registerPassword').value;
+    const btn = registerForm.querySelector('.auth-submit');
+    btn.disabled = true;
+    try {
+      const cred = await createUserWithEmailAndPassword(auth, email, password);
+      await setDoc(doc(db, 'users', cred.user.uid), {
+        email: email,
+        createdAt: serverTimestamp()
+      });
+      registerForm.reset();
+    } catch (err) {
+      showAuthError(authErrorText(err.code));
+    } finally {
+      btn.disabled = false;
+    }
+  });
+
+  logoutBtn.addEventListener('click', () => signOut(auth));
+
+  function formatDate(ts){
+    if (!ts) return '—';
+    const d = ts.toDate ? ts.toDate() : new Date(ts);
+    return d.toLocaleDateString('ru-RU', { day: '2-digit', month: 'long', year: 'numeric' });
+  }
+
+  async function loadAdminData(){
+    const snap = await getDocs(collection(db, 'users'));
+    adminUserCount.textContent = snap.size;
+    const rows = [];
+    snap.forEach(docSnap => {
+      const data = docSnap.data();
+      rows.push(`
+        <div class="cart-row">
+          <div class="cart-thumb">
+            <svg viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </div>
+          <div class="cart-info">
+            <div class="cart-name">${data.email || '—'}</div>
+            <div class="cart-meta">Регистрация: ${formatDate(data.createdAt)}</div>
+          </div>
+        </div>
+      `);
+    });
+    adminUserList.innerHTML = rows.join('') || '<div class="empty">Пока никого нет</div>';
+  }
+
+  onAuthStateChanged(auth, async (user) => {
+    if (user) {
+      authBlock.style.display = 'none';
+      accountBlock.style.display = '';
+      accountEmail.textContent = user.email;
+      try {
+        const snap = await getDoc(doc(db, 'users', user.uid));
+        accountJoined.textContent = 'В аккаунте с ' + formatDate(snap.exists() ? snap.data().createdAt : null);
+      } catch (e) {
+        accountJoined.textContent = '';
+      }
+      if (user.email === ADMIN_EMAIL) {
+        adminSection.style.display = '';
+        adminUserList.innerHTML = '<div class="empty">Загрузка...</div>';
+        loadAdminData().catch(() => {
+          adminUserList.innerHTML = '<div class="empty">Не удалось загрузить список</div>';
+        });
+      } else {
+        adminSection.style.display = 'none';
+      }
+    } else {
+      authBlock.style.display = '';
+      accountBlock.style.display = 'none';
+    }
   });
 </script>
 </body>
