@@ -1346,7 +1346,8 @@
         nickname: '',
         role: null,
         muted: false,
-        createdAt: serverTimestamp()
+        createdAt: serverTimestamp(),
+        lastLoginAt: serverTimestamp()
       });
       registerForm.reset();
     } catch (err) {
@@ -1360,14 +1361,20 @@
 
   function formatDate(ts){
     if (!ts) return '—';
-    const d = ts.toDate ? ts.toDate() : new Date(ts);
-    return d.toLocaleDateString('ru-RU', { day: '2-digit', month: 'long', year: 'numeric' });
+    try {
+      const d = ts.toDate ? ts.toDate() : new Date(ts);
+      if (isNaN(d.getTime())) return '—';
+      return d.toLocaleDateString('ru-RU', { day: '2-digit', month: 'long', year: 'numeric' });
+    } catch (e) { return '—'; }
   }
 
   function formatDateTime(ts){
-    if (!ts) return '';
-    const d = ts.toDate ? ts.toDate() : new Date(ts);
-    return d.toLocaleString('ru-RU', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+    if (!ts) return '—';
+    try {
+      const d = ts.toDate ? ts.toDate() : new Date(ts);
+      if (isNaN(d.getTime())) return '—';
+      return d.toLocaleString('ru-RU', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+    } catch (e) { return '—'; }
   }
 
   function setAvatarDisplay(url){
@@ -1488,7 +1495,7 @@
           <div class="list-thumb">${thumb}</div>
           <div class="list-info">
             <div class="list-name">${escapeHtml(displayName)}</div>
-            <div class="list-meta">${escapeHtml(data.email || '')}<br>Регистрация: ${formatDate(data.createdAt)}${muted ? ' · <span style="color:var(--danger)">заглушен</span>' : ''}</div>
+            <div class="list-meta">${escapeHtml(data.email || '')}<br>Рег.: ${formatDateTime(data.createdAt)} · Вход: ${formatDateTime(data.lastLoginAt)}${muted ? ' · <span style="color:var(--danger)">заглушен</span>' : ''}</div>
           </div>
           <button class="view-wall-btn" data-view-wall="${uid}">Стена</button>
           <button class="mute-btn ${muted ? 'unmute' : 'mute'}" data-mute="${uid}" data-muted="${muted ? '1' : '0'}">${muted ? 'Размутить' : 'Мут'}</button>
@@ -1561,7 +1568,7 @@
           <div class="user-hit-avatar">${thumb}</div>
           <div class="user-hit-info">
             <div class="user-hit-name">${escapeHtml(name)}</div>
-            <div class="user-hit-meta">на сайте с ${formatDate(d.createdAt)}${roleLabel}</div>
+            <div class="user-hit-meta">рег. ${formatDate(d.createdAt)} · вход ${formatDateTime(d.lastLoginAt)}${roleLabel}</div>
           </div>
           <button class="view-wall-btn" data-view-wall="${u.id}">Стена</button>
         </div>
@@ -1758,32 +1765,43 @@
     renderComments(p.id, commentsEl);
   }
 
+  function sortByCreatedAt(list, desc){
+    return list.slice().sort((a, b) => {
+      const ta = a.createdAt && a.createdAt.toMillis ? a.createdAt.toMillis() : (a.createdAt ? +new Date(a.createdAt) : 0);
+      const tb = b.createdAt && b.createdAt.toMillis ? b.createdAt.toMillis() : (b.createdAt ? +new Date(b.createdAt) : 0);
+      return desc ? (tb - ta) : (ta - tb);
+    });
+  }
+
   function subscribeWall(wallUid, feedEl){
     if (postsUnsub) { postsUnsub(); postsUnsub = null; }
     feedEl.innerHTML = '<div class="empty">Загрузка...</div>';
     commentsCache = {};
 
-    const q = query(collection(db, 'posts'), where('wallUid', '==', wallUid), orderBy('createdAt', 'desc'));
+    // без orderBy — не нужен составной индекс в Firestore
+    const q = query(collection(db, 'posts'), where('wallUid', '==', wallUid));
     postsUnsub = onSnapshot(q, async (snap) => {
-      const posts = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      let posts = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      posts = sortByCreatedAt(posts, true);
       feedEl.innerHTML = '';
       if (!posts.length) {
         feedEl.innerHTML = '<div class="empty">Пока нет записей на стене</div>';
         return;
       }
-      // load comments for these posts
       for (const p of posts) {
         try {
-          const cq = query(collection(db, 'comments'), where('postId', '==', p.id), orderBy('createdAt', 'asc'));
+          // comments тоже без orderBy
+          const cq = query(collection(db, 'comments'), where('postId', '==', p.id));
           const cs = await getDocs(cq);
-          commentsCache[p.id] = cs.docs.map(d => ({ id: d.id, ...d.data() }));
+          commentsCache[p.id] = sortByCreatedAt(cs.docs.map(d => ({ id: d.id, ...d.data() })), false);
         } catch (e) {
           commentsCache[p.id] = [];
         }
         renderPostCard(p, feedEl);
       }
     }, (err) => {
-      feedEl.innerHTML = '<div class="empty">Не удалось загрузить стену</div>';
+      console.error('wall load error', err);
+      feedEl.innerHTML = '<div class="empty">Не удалось загрузить стену. Проверьте правила Firestore для posts (read).</div>';
     });
   }
 
@@ -1834,10 +1852,9 @@
       createdAt: serverTimestamp()
     }).then(() => {
       input.value = '';
-      // optimistic: reload comments for this post
-      return getDocs(query(collection(db, 'comments'), where('postId', '==', postId), orderBy('createdAt', 'asc')));
+      return getDocs(query(collection(db, 'comments'), where('postId', '==', postId)));
     }).then(cs => {
-      commentsCache[postId] = cs.docs.map(d => ({ id: d.id, ...d.data() }));
+      commentsCache[postId] = sortByCreatedAt(cs.docs.map(d => ({ id: d.id, ...d.data() })), false);
       const el = document.querySelector(`[data-comments="${postId}"]`);
       if (el) renderComments(postId, el);
     }).catch(() => {
@@ -1875,7 +1892,7 @@
       if (snap.exists()) {
         const d = snap.data();
         otherName.textContent = d.nickname || d.email || '—';
-        otherJoined.textContent = (d.email ? d.email + ' · ' : '') + 'В аккаунте с ' + formatDate(d.createdAt);
+        otherJoined.textContent = (d.email ? d.email + ' · ' : '') + 'Рег.: ' + formatDateTime(d.createdAt) + ' · Вход: ' + formatDateTime(d.lastLoginAt);
         renderRoleTag(otherRole, d.role);
         if (d.photoURL) {
           otherAvatar.innerHTML = `<img src="${d.photoURL}" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
@@ -2075,19 +2092,34 @@
       try {
         let snap = await getDoc(doc(db, 'users', user.uid));
         if (!snap.exists()) {
-          const baseDoc = { email: user.email, nickname: '', role: null, muted: false, createdAt: serverTimestamp() };
+          const baseDoc = {
+            email: user.email,
+            nickname: '',
+            role: null,
+            muted: false,
+            createdAt: serverTimestamp(),
+            lastLoginAt: serverTimestamp()
+          };
           await setDoc(doc(db, 'users', user.uid), baseDoc, { merge: true });
           snap = await getDoc(doc(db, 'users', user.uid));
+        } else {
+          // фиксируем время входа
+          await setDoc(doc(db, 'users', user.uid), { lastLoginAt: serverTimestamp() }, { merge: true });
         }
+        // перечитываем, чтобы lastLoginAt / createdAt были актуальны
+        snap = await getDoc(doc(db, 'users', user.uid));
         currentUserDoc = snap.exists() ? snap.data() : null;
         accountName.textContent = (currentUserDoc && currentUserDoc.nickname) || user.email;
-        accountJoined.textContent = (user.email ? user.email + ' · ' : '') + 'В аккаунте с ' + formatDate(currentUserDoc ? currentUserDoc.createdAt : null);
+        const regStr = formatDateTime(currentUserDoc ? currentUserDoc.createdAt : null);
+        const loginStr = formatDateTime(currentUserDoc ? currentUserDoc.lastLoginAt : null);
+        accountJoined.textContent = (user.email || '') + ' · Рег.: ' + regStr + ' · Вход: ' + loginStr;
         if (currentUserDoc && currentUserDoc.photoURL) setAvatarDisplay(currentUserDoc.photoURL);
         renderRoleTag(accountRole, currentUserDoc ? currentUserDoc.role : null);
         isMuted = !!(currentUserDoc && currentUserDoc.muted);
         mutedBanner.style.display = isMuted ? '' : 'none';
         wallCompose.style.display = isMuted ? 'none' : '';
       } catch (e) {
+        console.error('profile load', e);
         accountJoined.textContent = user.email || '';
       }
 
