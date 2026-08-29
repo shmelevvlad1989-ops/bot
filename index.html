@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ua">
+<html lang="ru">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -223,12 +223,44 @@
     border-radius: 12px;
     background: linear-gradient(135deg, var(--accent-dim), transparent);
     display: flex; align-items: center; justify-content: center;
+    position: relative;
   }
   .product-thumb svg { width: 44px; height: 44px; stroke: var(--accent); }
   .product-name { font-weight: 700; font-size: 15px; }
   .product-desc { color: var(--ink-dim); font-size: 13px; line-height: 1.4; }
   .product-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: auto; }
   .product-price { font-weight: 800; font-size: 17px; }
+
+  /* category chips */
+  .chip-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 24px; }
+  .chip {
+    font-weight: 600; font-size: 13px;
+    padding: 8px 15px;
+    border-radius: 999px;
+    background: var(--panel);
+    border: 1px solid var(--panel-edge);
+    color: var(--ink-dim);
+    transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
+  }
+  .chip:hover { border-color: var(--accent); color: var(--ink); }
+  .chip.active { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+  .chip:active { transform: scale(0.95); }
+
+  /* favorite toggle on product thumb */
+  .fav-btn {
+    position: absolute; top: 8px; right: 8px;
+    width: 32px; height: 32px; border-radius: 50%;
+    background: rgba(10,14,22,0.4);
+    display: flex; align-items: center; justify-content: center;
+    transition: transform 0.15s ease, background 0.15s ease;
+  }
+  html.light .fav-btn { background: rgba(255,255,255,0.75); }
+  .fav-btn svg { width: 16px; height: 16px; stroke: #fff; fill: none; transition: fill 0.15s ease, stroke 0.15s ease; }
+  html.light .fav-btn svg { stroke: var(--ink-dim); }
+  .fav-btn.active svg { fill: var(--danger); stroke: var(--danger); }
+  .fav-btn:active { transform: scale(0.85); }
+  .fav-btn.pop { animation: fav-pop 0.35s cubic-bezier(.34,1.6,.5,1); }
+  @keyframes fav-pop { 0%{transform:scale(1);} 45%{transform:scale(1.35);} 100%{transform:scale(1);} }
 
   .add-btn {
     font-weight: 700; font-size: 13px;
@@ -339,6 +371,20 @@
   .cart-name { font-weight: 700; font-size: 14px; }
   .cart-meta { color: var(--ink-dim); font-size: 12px; margin-top: 2px; }
   .cart-subtotal { font-weight: 800; font-size: 14px; flex: none; }
+  .qty-stepper {
+    display: flex; align-items: center; gap: 2px; flex: none;
+    background: var(--bg); border: 1px solid var(--panel-edge);
+    border-radius: 9px; padding: 3px;
+  }
+  .qty-btn {
+    width: 24px; height: 24px; border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--ink-dim);
+    transition: background 0.15s ease, color 0.15s ease;
+  }
+  .qty-btn:hover { background: var(--accent-dim); color: var(--accent); }
+  .qty-btn svg { width: 12px; height: 12px; }
+  .qty-val { font-family: var(--mono); font-size: 13px; font-weight: 600; min-width: 20px; text-align: center; }
   .cart-remove {
     width: 28px; height: 28px; border-radius: 8px; flex: none;
     display: flex; align-items: center; justify-content: center;
@@ -483,6 +529,10 @@
       <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/></svg>
       Главная
     </button>
+    <button class="drawer-item" data-view="favorites">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 00-7.8 0L12 5.6l-1-1a5.5 5.5 0 00-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 000-7.8z"/></svg>
+      Избранное
+    </button>
     <button class="drawer-item" data-view="settings">
       <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 00.34 1.87l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.7 1.7 0 00-1.87-.34 1.7 1.7 0 00-1 1.55V21a2 2 0 11-4 0v-.09a1.7 1.7 0 00-1-1.55 1.7 1.7 0 00-1.87.34l-.06.06a2 2 0 11-2.83-2.83l.06-.06A1.7 1.7 0 004.6 15a1.7 1.7 0 00-1.55-1H3a2 2 0 110-4h.09A1.7 1.7 0 004.6 9a1.7 1.7 0 00-.34-1.87l-.06-.06a2 2 0 112.83-2.83l.06.06A1.7 1.7 0 009 4.6a1.7 1.7 0 001-1.55V3a2 2 0 114 0v.09a1.7 1.7 0 001 1.55 1.7 1.7 0 001.87-.34l.06-.06a2 2 0 112.83 2.83l-.06.06A1.7 1.7 0 0019.4 9a1.7 1.7 0 001.55 1H21a2 2 0 110 4h-.09a1.7 1.7 0 00-1.55 1z"/></svg>
       Настройки
@@ -497,6 +547,11 @@
   <button class="icon-btn" id="cartBtn" aria-label="Корзина">
     <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6"/></svg>
     <span class="badge" id="cartBadge">0</span>
+  </button>
+
+  <button class="icon-btn" id="favBtn" aria-label="Избранное">
+    <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 00-7.8 0L12 5.6l-1-1a5.5 5.5 0 00-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 000-7.8z"/></svg>
+    <span class="badge" id="favBadge">0</span>
   </button>
 
   <button class="icon-btn" id="profileBtn" aria-label="Профиль">
@@ -516,6 +571,12 @@
   <section class="view active" id="view-home">
     <h1>Каталог</h1>
     <p class="sub">Начните вводить название в поиске — покажем похожие товары.</p>
+    <div class="chip-row" id="categoryChips">
+      <button class="chip active" data-cat="all">Все</button>
+      <button class="chip" data-cat="audio">Звук</button>
+      <button class="chip" data-cat="gadgets">Гаджеты</button>
+      <button class="chip" data-cat="accessories">Аксессуары</button>
+    </div>
     <div class="product-grid" id="productGrid"></div>
     <div class="empty" id="noResults" style="display:none;">Ничего не найдено</div>
   </section>
@@ -589,6 +650,14 @@
     <div class="empty">У вас пока нет заказов</div>
   </section>
 
+  <!-- FAVORITES -->
+  <section class="view" id="view-favorites">
+    <h1>Избранное</h1>
+    <p class="sub">Товары, которые вы отметили сердечком.</p>
+    <div class="product-grid" id="favGrid"></div>
+    <div class="empty" id="favEmpty" style="display:none;">Пока ничего не добавлено</div>
+  </section>
+
   <!-- CART -->
   <section class="view" id="view-cart">
     <div id="cartMain">
@@ -629,27 +698,65 @@
 <script>
   // ---- product catalog (test data) ----
   const PRODUCTS = [
-    { id: 1, name: 'Беспроводные наушники', desc: 'Шумоподавление, 30 часов автономности.', price: 1290 },
-    { id: 2, name: 'Накладные наушники', desc: 'Объёмный звук, мягкие амбушюры.', price: 1490 },
-    { id: 3, name: 'Умные часы', desc: 'Пульс, сон, уведомления с телефона.', price: 2190 },
-    { id: 4, name: 'Портативная колонка', desc: 'Защита от воды, 12 часов работы.', price: 990 },
-    { id: 5, name: 'Беспроводное зарядное устройство', desc: 'Быстрая зарядка 15 Вт.', price: 590 },
-    { id: 6, name: 'Чехол для телефона', desc: 'Противоударный силикон.', price: 290 },
+    { id: 1, name: 'Беспроводные наушники', desc: 'Шумоподавление, 30 часов автономности.', price: 1290, cat: 'audio' },
+    { id: 2, name: 'Накладные наушники', desc: 'Объёмный звук, мягкие амбушюры.', price: 1490, cat: 'audio' },
+    { id: 3, name: 'Умные часы', desc: 'Пульс, сон, уведомления с телефона.', price: 2190, cat: 'gadgets' },
+    { id: 4, name: 'Портативная колонка', desc: 'Защита от воды, 12 часов работы.', price: 990, cat: 'audio' },
+    { id: 5, name: 'Беспроводное зарядное устройство', desc: 'Быстрая зарядка 15 Вт.', price: 590, cat: 'gadgets' },
+    { id: 6, name: 'Чехол для телефона', desc: 'Противоударный силикон.', price: 290, cat: 'accessories' },
   ];
 
   const PRODUCT_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18v-6a9 9 0 0118 0v6"/><path d="M21 19a2 2 0 01-2 2h-1a2 2 0 01-2-2v-3a2 2 0 012-2h3zM3 19a2 2 0 002 2h1a2 2 0 002-2v-3a2 2 0 00-2-2H3z"/></svg>';
   const CHECK_ICON = '<svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5L9.5 18L20 6"/></svg>';
+  const HEART_ICON = '<svg viewBox="0 0 24 24"><path d="M20.8 4.6a5.5 5.5 0 00-7.8 0L12 5.6l-1-1a5.5 5.5 0 00-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 000-7.8z"/></svg>';
+
+  // ---- persisted state (cart + favorites) ----
+  function loadJSON(key, fallback){
+    try {
+      const raw = localStorage.getItem(key);
+      return raw ? JSON.parse(raw) : fallback;
+    } catch(e){ return fallback; }
+  }
+  function saveJSON(key, value){
+    try { localStorage.setItem(key, JSON.stringify(value)); } catch(e){ /* ignore */ }
+  }
+
+  // ---- favorites state (persisted) ----
+  const favBadge = document.getElementById('favBadge');
+  let favorites = new Set(loadJSON('monte_favs', []));
+
+  function toggleFavorite(id){
+    if (favorites.has(id)) favorites.delete(id);
+    else favorites.add(id);
+    saveJSON('monte_favs', Array.from(favorites));
+    updateFavBadge();
+    renderProducts(currentList());
+    renderFavorites();
+    const btn = document.querySelector(`[data-fav="${id}"].active`) || document.querySelector(`[data-fav="${id}"]`);
+    if (btn) { btn.classList.add('pop'); setTimeout(() => btn.classList.remove('pop'), 350); }
+  }
+  function updateFavBadge(){
+    favBadge.textContent = favorites.size;
+    favBadge.classList.toggle('show', favorites.size > 0);
+  }
+  updateFavBadge();
 
   function formatPrice(n){ return n.toLocaleString('uk-UA') + ' \u20b4'; }
 
-  // ---- render product grid ----
+  // ---- render product cards (used by catalog and favorites) ----
   const productGrid = document.getElementById('productGrid');
   const noResults = document.getElementById('noResults');
+  const favGrid = document.getElementById('favGrid');
+  const favEmpty = document.getElementById('favEmpty');
 
-  function renderProducts(list){
-    productGrid.innerHTML = list.map(p => `
+  function cardHTML(p){
+    const isFav = favorites.has(p.id);
+    return `
       <div class="product-card" data-id="${p.id}">
-        <div class="product-thumb">${PRODUCT_ICON}</div>
+        <div class="product-thumb">
+          ${PRODUCT_ICON}
+          <button class="fav-btn${isFav ? ' active' : ''}" data-fav="${p.id}" aria-label="В избранное">${HEART_ICON}</button>
+        </div>
         <div class="product-name">${p.name}</div>
         <div class="product-desc">${p.desc}</div>
         <div class="product-row">
@@ -660,18 +767,37 @@
           </button>
         </div>
       </div>
-    `).join('');
+    `;
+  }
+
+  function renderProducts(list){
+    productGrid.innerHTML = list.map(cardHTML).join('');
     noResults.style.display = list.length ? 'none' : 'block';
   }
+
+  function renderFavorites(){
+    const list = PRODUCTS.filter(p => favorites.has(p.id));
+    favGrid.innerHTML = list.map(cardHTML).join('');
+    favEmpty.style.display = list.length ? 'none' : 'block';
+  }
+
   renderProducts(PRODUCTS);
 
-  productGrid.addEventListener('click', (e) => {
-    const btn = e.target.closest('[data-add]');
-    if (!btn) return;
-    addToCart(Number(btn.dataset.add));
-    btn.classList.add('done');
-    setTimeout(() => btn.classList.remove('done'), 1400);
-  });
+  function handleGridClick(e){
+    const addBtn = e.target.closest('[data-add]');
+    if (addBtn){
+      addToCart(Number(addBtn.dataset.add));
+      addBtn.classList.add('done');
+      setTimeout(() => addBtn.classList.remove('done'), 1400);
+      return;
+    }
+    const favBtn = e.target.closest('[data-fav]');
+    if (favBtn){
+      toggleFavorite(Number(favBtn.dataset.fav));
+    }
+  }
+  productGrid.addEventListener('click', handleGridClick);
+  favGrid.addEventListener('click', handleGridClick);
 
   // ---- navigation ----
   const burgerBtn = document.getElementById('burgerBtn');
@@ -699,6 +825,7 @@
     views.forEach(v => v.classList.toggle('active', v.id === 'view-' + name));
     drawerItems.forEach(i => i.classList.toggle('active', i.dataset.view === name));
     if (name === 'cart') renderCart();
+    if (name === 'favorites') renderFavorites();
   }
 
   drawerItems.forEach(item => {
@@ -710,17 +837,27 @@
 
   document.getElementById('profileBtn').addEventListener('click', () => showView('profile'));
   document.getElementById('cartBtn').addEventListener('click', () => showView('cart'));
+  document.getElementById('favBtn').addEventListener('click', () => showView('favorites'));
 
   // ---- cart state ----
   const cartBadge = document.getElementById('cartBadge');
-  let cart = {}; // { productId: qty }
+  let cart = loadJSON('monte_cart', {}); // { productId: qty }
 
   function addToCart(id){
     cart[id] = (cart[id] || 0) + 1;
+    saveJSON('monte_cart', cart);
     updateBadge();
   }
   function removeFromCart(id){
     delete cart[id];
+    saveJSON('monte_cart', cart);
+    updateBadge();
+    renderCart();
+  }
+  function setQty(id, qty){
+    if (qty <= 0){ removeFromCart(id); return; }
+    cart[id] = qty;
+    saveJSON('monte_cart', cart);
     updateBadge();
     renderCart();
   }
@@ -729,6 +866,7 @@
     cartBadge.textContent = total;
     cartBadge.classList.toggle('show', total > 0);
   }
+  updateBadge();
 
   const cartMain = document.getElementById('cartMain');
   const cartList = document.getElementById('cartList');
@@ -765,7 +903,16 @@
           <div class="cart-thumb">${PRODUCT_ICON}</div>
           <div class="cart-info">
             <div class="cart-name">${p.name}</div>
-            <div class="cart-meta">${qty} × ${formatPrice(p.price)}</div>
+            <div class="cart-meta">${formatPrice(p.price)} за шт.</div>
+          </div>
+          <div class="qty-stepper">
+            <button class="qty-btn" data-decr="${id}" aria-label="Меньше">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M5 12h14"/></svg>
+            </button>
+            <span class="qty-val">${qty}</span>
+            <button class="qty-btn" data-incr="${id}" aria-label="Больше">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+            </button>
           </div>
           <div class="cart-subtotal">${formatPrice(subtotal)}</div>
           <button class="cart-remove" data-remove="${id}" aria-label="Убрать">
@@ -778,15 +925,19 @@
   }
 
   cartList.addEventListener('click', (e) => {
-    const btn = e.target.closest('[data-remove]');
-    if (!btn) return;
-    removeFromCart(Number(btn.dataset.remove));
+    const removeBtn = e.target.closest('[data-remove]');
+    if (removeBtn){ removeFromCart(Number(removeBtn.dataset.remove)); return; }
+    const incrBtn = e.target.closest('[data-incr]');
+    if (incrBtn){ const id = Number(incrBtn.dataset.incr); setQty(id, (cart[id] || 0) + 1); return; }
+    const decrBtn = e.target.closest('[data-decr]');
+    if (decrBtn){ const id = Number(decrBtn.dataset.decr); setQty(id, (cart[id] || 0) - 1); return; }
   });
 
   payBtn.addEventListener('click', () => {
     payBtn.classList.add('done');
     setTimeout(() => {
       cart = {};
+      saveJSON('monte_cart', cart);
       updateBadge();
       cartMain.style.display = 'none';
       payBtn.classList.remove('done');
@@ -798,9 +949,11 @@
     showView('home');
   });
 
-  // ---- search with suggestions ----
+  // ---- search + category filtering ----
   const searchInput = document.getElementById('searchInput');
   const suggestions = document.getElementById('suggestions');
+  const categoryChips = document.getElementById('categoryChips');
+  let currentCategory = 'all';
 
   function matchProducts(q){
     q = q.trim().toLowerCase();
@@ -826,11 +979,26 @@
     suggestions.classList.add('show');
   }
 
-  function applyFilter(){
-    const q = searchInput.value;
-    const matches = q.trim() ? matchProducts(q) : PRODUCTS;
-    renderProducts(matches);
+  function currentList(){
+    const q = searchInput.value.trim().toLowerCase();
+    return PRODUCTS.filter(p => {
+      const matchesCat = currentCategory === 'all' || p.cat === currentCategory;
+      const matchesQ = !q || p.name.toLowerCase().includes(q);
+      return matchesCat && matchesQ;
+    });
   }
+
+  function applyFilter(){
+    renderProducts(currentList());
+  }
+
+  categoryChips.addEventListener('click', (e) => {
+    const chip = e.target.closest('.chip');
+    if (!chip) return;
+    currentCategory = chip.dataset.cat;
+    categoryChips.querySelectorAll('.chip').forEach(c => c.classList.toggle('active', c === chip));
+    applyFilter();
+  });
 
   searchInput.addEventListener('input', () => {
     renderSuggestions(searchInput.value);
