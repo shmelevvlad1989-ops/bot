@@ -64,6 +64,25 @@
       linear-gradient(90deg, rgba(47,111,237,0.06) 1px, transparent 1px);
   }
 
+  html.beamng{
+    --bg: #0a0a0a;
+    --panel: #161616;
+    --panel-edge: #2c2c2c;
+    --ink: #f5f0ea;
+    --ink-dim: #9a9088;
+    --accent: #ff6a00;
+    --accent-ink: #0a0a0a;
+    --accent-dim: rgba(255,106,0,0.16);
+    --neon-green: #ff8c1a;
+    --neon-green-dim: rgba(255,140,26,0.15);
+    --neon-green-glow: 0 0 8px rgba(255,138,0,0.7), 0 0 20px rgba(255,106,0,0.35);
+  }
+  html.beamng body::before {
+    background-image:
+      linear-gradient(rgba(255,106,0,0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,106,0,0.05) 1px, transparent 1px);
+  }
+
   button { font-family: inherit; cursor: pointer; border: none; outline: none; -webkit-tap-highlight-color: transparent; background: none; color: inherit; }
   button:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
   input, select, textarea { font-family: inherit; }
@@ -241,6 +260,59 @@
   .studio-icon svg { width: 24px; height: 24px; stroke: var(--accent); }
   .studio-name { font-weight: 800; font-size: 16px; margin-bottom: 6px; }
   .studio-desc { color: var(--ink-dim); font-size: 14px; line-height: 1.6; }
+
+  /* ===== HOME: about panel (replaces the old feature-card grid) ===== */
+  .about-panel {
+    background: var(--panel); border: 1px solid var(--panel-edge);
+    border-radius: 22px; padding: 28px 30px;
+    position: relative; overflow: hidden;
+  }
+  .about-panel::before {
+    content: '';
+    position: absolute; top: -40%; right: -10%;
+    width: 260px; height: 260px; border-radius: 50%;
+    background: radial-gradient(circle, var(--accent-dim), transparent 70%);
+    pointer-events: none;
+  }
+  .about-panel-title {
+    font-family: var(--mono); font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--accent); font-weight: 700; margin-bottom: 12px;
+  }
+  .about-panel-text {
+    color: var(--ink-dim); font-size: 15px; line-height: 1.7; margin: 0 0 20px;
+    max-width: 560px; position: relative;
+  }
+  .about-tags { display: flex; gap: 10px; flex-wrap: wrap; position: relative; }
+  .about-tag {
+    font-family: var(--mono); font-size: 12.5px; font-weight: 700;
+    letter-spacing: 0.02em;
+    color: var(--ink-dim); background: var(--bg);
+    border: 1px solid var(--panel-edge);
+    padding: 8px 14px; border-radius: 999px;
+  }
+
+  /* ===== CREATORS view ===== */
+  .creator-card {
+    background: var(--panel); border: 1px solid var(--panel-edge);
+    border-radius: 18px; padding: 24px; margin-bottom: 16px;
+    display: flex; gap: 18px; align-items: flex-start;
+  }
+  .creator-icon {
+    width: 54px; height: 54px; border-radius: 16px; flex: none;
+    background: linear-gradient(135deg, var(--accent-dim), transparent);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .creator-icon svg { width: 26px; height: 26px; stroke: var(--accent); }
+  .creator-name { font-weight: 800; font-size: 18px; margin-bottom: 4px; }
+  .creator-role {
+    font-family: var(--mono); font-size: 12.5px; font-weight: 700;
+    letter-spacing: 0.04em; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 10px;
+  }
+  .creator-desc { color: var(--ink-dim); font-size: 14px; line-height: 1.65; }
+
+  /* theme picker chips reuse .chip, just make them equal width on the row */
+  .theme-chip { flex: 1; text-align: center; }
 
   /* ===== MOD / FEATURE grid used on Mods view ===== */
   .chip-row { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 22px; }
@@ -802,6 +874,10 @@
       <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 00.34 1.87l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.7 1.7 0 00-1.87-.34 1.7 1.7 0 00-1 1.55V21a2 2 0 11-4 0v-.09a1.7 1.7 0 00-1-1.55 1.7 1.7 0 00-1.87.34l-.06.06a2 2 0 11-2.83-2.83l.06-.06A1.7 1.7 0 004.6 15a1.7 1.7 0 00-1.55-1H3a2 2 0 110-4h.09A1.7 1.7 0 004.6 9a1.7 1.7 0 00-.34-1.87l-.06-.06a2 2 0 112.83-2.83l.06.06A1.7 1.7 0 009 4.6a1.7 1.7 0 001-1.55V3a2 2 0 114 0v.09a1.7 1.7 0 001 1.55 1.7 1.7 0 001.87-.34l.06-.06a2 2 0 112.83 2.83l-.06.06A1.7 1.7 0 0019.4 9a1.7 1.7 0 001.55 1H21a2 2 0 110 4h-.09a1.7 1.7 0 00-1.55 1z"/></svg>
       Настройки
     </button>
+    <button class="drawer-item" data-view="creators">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+      Создатели
+    </button>
   </nav>
 </aside>
 
@@ -834,32 +910,16 @@
       </button>
     </div>
 
-    <div class="section-heading" style="margin-top:0;">Чем мы занимаемся</div>
-    <div class="feature-grid">
-      <div class="feature-card">
-        <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 17h14M5 17a2 2 0 01-2-2v-3l2-5h10l2 5v3a2 2 0 01-2 2M5 17v2a1 1 0 001 1h1a1 1 0 001-1v-2m8 0v2a1 1 0 001 1h1a1 1 0 001-1v-2"/><circle cx="7.5" cy="14.5" r="1"/><circle cx="16.5" cy="14.5" r="1"/></svg></div>
-        <div class="feature-title">ДПС</div>
-        <div class="feature-desc">Ливреи и комплекты патрульных автомобилей.</div>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a5 5 0 015 5c0 3-2 4-2 7H9c0-3-2-4-2-7a5 5 0 015-5z"/><path d="M9 18h6M10 21h4"/></svg></div>
-        <div class="feature-title">Мигалки</div>
-        <div class="feature-desc">Проблесковые маячки и light-бары под разные кузова.</div>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l19-2-4 9H7z"/><path d="M3 11l4 8h5"/></svg></div>
-        <div class="feature-title">СГУ</div>
-        <div class="feature-desc">Специальные звуковые сигналы и сирены.</div>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="9" rx="2"/><path d="M7 8V6a2 2 0 012-2h6a2 2 0 012 2v2M7 17v2M17 17v2"/></svg></div>
-        <div class="feature-title">Автомобили</div>
-        <div class="feature-desc">Готовые машины и переработанные модели.</div>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v16H4z"/><path d="M4 12h16M12 4v16"/></svg></div>
-        <div class="feature-title">Винилы</div>
-        <div class="feature-desc">Наклейки и цветовые схемы кузова.</div>
+    <div class="about-panel">
+      <div class="about-panel-title">Чем мы занимаемся</div>
+      <p class="about-panel-text">Мы занимаемся разработкой модов для BeamNG.drive — от ливрей ДПС и мигалок до СГУ, автомобилей и винилов, — а также фиксом и доработкой уже существующих модов: обновляем их под новые версии игры, исправляем баги и добавляем недостающий функционал.</p>
+      <div class="about-tags">
+        <span class="about-tag">ДПС</span>
+        <span class="about-tag">Мигалки</span>
+        <span class="about-tag">СГУ</span>
+        <span class="about-tag">Автомобили</span>
+        <span class="about-tag">Винилы</span>
+        <span class="about-tag">Фиксы и апдейты</span>
       </div>
     </div>
 
@@ -867,7 +927,7 @@
       <div class="studio-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3 7h7l-5.5 4.5L18.5 21 12 16.5 5.5 21l2-7.5L2 9h7z"/></svg></div>
       <div>
         <div class="studio-name">Monte and Network</div>
-        <div class="studio-desc">Разработчики этого сайта и всех модов, которые здесь публикуются. Мы небольшая команда, делающая контент для BeamNG.drive по тематике полиции и спецтранспорта.</div>
+        <div class="studio-desc">Monte отвечает за сайт, тех.поддержку и код модов, Network — за 3D-модели, новые моды и фиксы. Подробнее о том, кто чем занимается — в разделе «Создатели».</div>
       </div>
     </div>
   </section>
@@ -882,15 +942,6 @@
       <input type="text" id="modSearchInput" placeholder="Найти мод..." autocomplete="off">
     </div>
 
-    <div class="chip-row" id="modCategoryChips">
-      <button class="chip active" data-cat="all">Все</button>
-      <button class="chip" data-cat="dps">ДПС</button>
-      <button class="chip" data-cat="lights">Мигалки</button>
-      <button class="chip" data-cat="sgu">СГУ</button>
-      <button class="chip" data-cat="cars">Автомобили</button>
-      <button class="chip" data-cat="vinyls">Винилы</button>
-    </div>
-
     <div class="mod-grid" id="modGrid"></div>
     <div class="empty" id="modEmpty" style="display:none;">Моды пока не загружены</div>
   </section>
@@ -900,16 +951,16 @@
     <h1>Настройки</h1>
     <p class="sub">Внешний вид и информация о приложении.</p>
 
-    <div class="setting-row">
+    <div class="setting-row" style="flex-direction:column; align-items:stretch; gap:16px;">
       <div>
         <div class="setting-label">Тема оформления</div>
         <div class="setting-sub" id="themeLabel">Синяя тёмная</div>
       </div>
-      <button class="theme-switch" id="themeSwitch" aria-label="Переключить тему">
-        <span class="knob">
-          <svg id="themeIcon" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
-        </span>
-      </button>
+      <div class="chip-row" id="themePicker" style="margin-bottom:0;">
+        <button class="chip theme-chip active" data-theme="dark">Синяя тёмная</button>
+        <button class="chip theme-chip" data-theme="light">Синяя светлая</button>
+        <button class="chip theme-chip" data-theme="beamng">BeamNG</button>
+      </div>
     </div>
 
     <!-- admin-only mod management -->
@@ -922,16 +973,6 @@
           <div class="upload-field">
             <label>Название мода</label>
             <input type="text" id="modNameInput" placeholder="Например: Ford Crown Victoria ДПС" required maxlength="60">
-          </div>
-          <div class="upload-field">
-            <label>Категория</label>
-            <select id="modCategoryInput">
-              <option value="dps">ДПС</option>
-              <option value="lights">Мигалки</option>
-              <option value="sgu">СГУ</option>
-              <option value="cars">Автомобили</option>
-              <option value="vinyls">Винилы</option>
-            </select>
           </div>
           <div class="upload-field">
             <label>Файл мода (.zip)</label>
@@ -985,8 +1026,6 @@
       </div>
       <svg class="project-arrow" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M7 7h10v10"/></svg>
     </a>
-
-    <div class="dev-credit">разработчик: <b>Monte and Network</b></div>
   </section>
 
   <!-- PROFILE -->
@@ -1126,6 +1165,30 @@
     </div>
   </section>
 
+  <!-- CREATORS -->
+  <section class="view" id="view-creators">
+    <h1>Создатели</h1>
+    <p class="sub">Команда, которая делает monte.shop и моды к нему.</p>
+
+    <div class="creator-card">
+      <div class="creator-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></div>
+      <div>
+        <div class="creator-name">Monte</div>
+        <div class="creator-role">Сайт · Тех.поддержка · Код модов</div>
+        <div class="creator-desc">Разрабатывает и поддерживает monte.shop, отвечает за техническую поддержку пользователей, а также пишет код самих модов — логику СГУ, скриптов и других программных частей.</div>
+      </div>
+    </div>
+
+    <div class="creator-card">
+      <div class="creator-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg></div>
+      <div>
+        <div class="creator-name">Network</div>
+        <div class="creator-role">Моды · 3D-моделирование · Фиксы</div>
+        <div class="creator-desc">Создаёт новые моды и 3D-модели, занимается моделированием и текстурированием, а также делает фиксы и модификации — обновляет и дорабатывает уже выпущенные моды.</div>
+      </div>
+    </div>
+  </section>
+
 </main>
 
 <script>
@@ -1187,20 +1250,31 @@
     siteLinkSub.textContent = window.location.hostname || window.location.href;
   }
 
-  // ---- theme toggle ----
-  const themeSwitch = document.getElementById('themeSwitch');
+  // ---- theme picker (3 themes) ----
+  const themePicker = document.getElementById('themePicker');
   const themeLabel = document.getElementById('themeLabel');
-  const themeIcon = document.getElementById('themeIcon');
 
-  const sunPath = 'M12 3v2M12 19v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M3 12h2M19 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4M12 8a4 4 0 100 8 4 4 0 000-8z';
-  const moonPath = 'M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z';
+  const THEME_NAMES = {
+    dark: 'Синяя тёмная',
+    light: 'Синяя светлая',
+    beamng: 'BeamNG · чёрно-оранжевая'
+  };
 
-  themeSwitch.addEventListener('click', () => {
-    const isLight = document.documentElement.classList.toggle('light');
-    themeSwitch.classList.toggle('on', isLight);
-    themeLabel.textContent = isLight ? 'Синяя светлая' : 'Синяя тёмная';
-    themeIcon.innerHTML = '<path d="' + (isLight ? sunPath : moonPath) + '"/>';
+  function applyTheme(theme){
+    document.documentElement.classList.remove('light', 'beamng');
+    if (theme === 'light') document.documentElement.classList.add('light');
+    if (theme === 'beamng') document.documentElement.classList.add('beamng');
+    themeLabel.textContent = THEME_NAMES[theme] || THEME_NAMES.dark;
+    themePicker.querySelectorAll('.theme-chip').forEach(c => c.classList.toggle('active', c.dataset.theme === theme));
+  }
+
+  themePicker.addEventListener('click', (e) => {
+    const chip = e.target.closest('.theme-chip');
+    if (!chip) return;
+    applyTheme(chip.dataset.theme);
   });
+
+  applyTheme('dark');
 
   function formatBytes(n){
     if (!n && n !== 0) return '';
@@ -1241,7 +1315,6 @@
     dev:  { label: 'Разработчик', css: 'role-dev' },
     lead: { label: 'Руководитель', css: 'role-lead' }
   };
-  const CATEGORY_LABELS = { dps: 'ДПС', lights: 'Мигалки', sgu: 'СГУ', cars: 'Автомобили', vinyls: 'Винилы' };
   const EMOJIS = ['😀','😂','😍','🔥','👍','❤️','😎','🎉','🚗','🚓','🚨','💡','🎵','⭐','💪','🙌','😅','🤔','😢','😡','👏','🤝','✨','💯','🏆','🎮','🛠️','📸'];
   const formatBytes = window.__formatBytes;
 
@@ -1915,7 +1988,6 @@
   const modGrid = document.getElementById('modGrid');
   const modEmpty = document.getElementById('modEmpty');
   const modSearchInput = document.getElementById('modSearchInput');
-  const modCategoryChips = document.getElementById('modCategoryChips');
   const modsManageList = document.getElementById('modsManageList');
   const uploadForm = document.getElementById('uploadForm');
   const uploadError = document.getElementById('uploadError');
@@ -1938,12 +2010,9 @@
   const TRASH_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg>';
 
   let allMods = [];
-  let currentModCategory = 'all';
 
   function modMatchesFilter(m, q){
-    const matchesCat = currentModCategory === 'all' || m.category === currentModCategory;
-    const matchesQ = !q || m.name.toLowerCase().includes(q);
-    return matchesCat && matchesQ;
+    return !q || m.name.toLowerCase().includes(q);
   }
 
   function renderModGrid(){
@@ -1952,7 +2021,6 @@
     modGrid.innerHTML = list.map(m => `
       <div class="mod-card">
         <div class="mod-thumb">${MOD_ICON}</div>
-        <span class="mod-tag">${CATEGORY_LABELS[m.category] || m.category}</span>
         <div class="mod-name">${escapeHtml(m.name)}</div>
         <div class="mod-meta">Загружено ${formatDate(m.createdAt)}</div>
         <div class="mod-row">
@@ -1970,7 +2038,7 @@
         <div class="list-thumb">${MOD_ICON}</div>
         <div class="list-info">
           <div class="list-name">${escapeHtml(m.name)}</div>
-          <div class="list-meta">${CATEGORY_LABELS[m.category] || m.category} · ${formatBytes(m.size)} · ${formatDate(m.createdAt)}</div>
+          <div class="list-meta">${formatBytes(m.size)} · ${formatDate(m.createdAt)}</div>
         </div>
         <button class="list-remove" data-delete-mod aria-label="Удалить мод">${TRASH_ICON}</button>
       </div>
@@ -1987,13 +2055,6 @@
   });
 
   modSearchInput.addEventListener('input', renderModGrid);
-  modCategoryChips.addEventListener('click', (e) => {
-    const chip = e.target.closest('.chip');
-    if (!chip) return;
-    currentModCategory = chip.dataset.cat;
-    modCategoryChips.querySelectorAll('.chip').forEach(c => c.classList.toggle('active', c === chip));
-    renderModGrid();
-  });
 
   function showUploadError(msg){
     uploadError.textContent = msg;
@@ -2011,7 +2072,6 @@
     if (!user || user.email !== ADMIN_EMAIL) { showUploadError('Загрузка модов доступна только администратору.'); return; }
 
     const name = document.getElementById('modNameInput').value.trim();
-    const category = document.getElementById('modCategoryInput').value;
     const file = modFileInput.files[0];
 
     if (!name) { showUploadError('Укажите название мода.'); return; }
@@ -2040,7 +2100,7 @@
       try {
         const fileURL = await getDownloadURL(task.snapshot.ref);
         await addDoc(collection(db, 'mods'), {
-          name, category,
+          name,
           fileName: file.name,
           fileURL, storagePath,
           size: file.size,
