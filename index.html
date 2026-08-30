@@ -83,6 +83,44 @@
       linear-gradient(90deg, rgba(255,106,0,0.05) 1px, transparent 1px);
   }
 
+  html.crimson{
+    --bg: #12070a;
+    --panel: #1c0f13;
+    --panel-edge: #3a1a22;
+    --ink: #f7ecee;
+    --ink-dim: #a1848c;
+    --accent: #ff2d55;
+    --accent-ink: #180208;
+    --accent-dim: rgba(255,45,85,0.16);
+    --neon-green: #ff5c7c;
+    --neon-green-dim: rgba(255,92,124,0.15);
+    --neon-green-glow: 0 0 8px rgba(255,45,85,0.7), 0 0 20px rgba(255,45,85,0.35);
+  }
+  html.crimson body::before {
+    background-image:
+      linear-gradient(rgba(255,45,85,0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,45,85,0.05) 1px, transparent 1px);
+  }
+
+  html.obsidian{
+    --bg: #060607;
+    --panel: #101012;
+    --panel-edge: #232326;
+    --ink: #f2f2f4;
+    --ink-dim: #8a8a90;
+    --accent: #b0b3ba;
+    --accent-ink: #08080a;
+    --accent-dim: rgba(176,179,186,0.14);
+    --neon-green: #d8dbe2;
+    --neon-green-dim: rgba(216,219,226,0.12);
+    --neon-green-glow: 0 0 8px rgba(216,219,226,0.55), 0 0 20px rgba(216,219,226,0.25);
+  }
+  html.obsidian body::before {
+    background-image:
+      linear-gradient(rgba(176,179,186,0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(176,179,186,0.05) 1px, transparent 1px);
+  }
+
   button { font-family: inherit; cursor: pointer; border: none; outline: none; -webkit-tap-highlight-color: transparent; background: none; color: inherit; }
   button:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
   input, select, textarea { font-family: inherit; }
@@ -197,12 +235,69 @@
 
   /* ===== HOME / ABOUT ===== */
   .hero {
+    position: relative;
     background: linear-gradient(160deg, var(--accent-dim), transparent 65%);
     border: 1px solid var(--panel-edge);
     border-radius: 22px;
     padding: 36px 30px;
     margin-bottom: 32px;
     box-shadow: 0 0 40px rgba(77,163,255,0.08);
+    overflow: hidden;
+    isolation: isolate;
+  }
+  .hero-bg-glow {
+    position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  }
+  .hero-bg-glow span {
+    position: absolute; border-radius: 50%;
+    filter: blur(50px);
+    opacity: 0.55;
+    background: var(--accent);
+    animation: floatGlow 10s ease-in-out infinite;
+  }
+  .hero-bg-glow span:nth-child(1) { width: 220px; height: 220px; top: -80px; right: -40px; opacity: 0.35; animation-duration: 12s; }
+  .hero-bg-glow span:nth-child(2) { width: 160px; height: 160px; bottom: -70px; right: 120px; background: var(--neon-green); opacity: 0.16; animation-duration: 9s; animation-delay: -3s; }
+  .hero-bg-glow span:nth-child(3) { width: 130px; height: 130px; bottom: 20px; left: -40px; opacity: 0.2; animation-duration: 14s; animation-delay: -6s; }
+  @keyframes floatGlow {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    50% { transform: translate(-18px, 14px) scale(1.12); }
+  }
+  .hero-bg-icon {
+    position: absolute; right: 18px; top: 18px; z-index: -1;
+    width: 130px; height: 130px; opacity: 0.08; pointer-events: none;
+    stroke: var(--accent); fill: none; stroke-width: 1;
+  }
+
+  /* police light-bar flash (ДПС theme) */
+  .police-lights {
+    position: absolute; inset: 0; z-index: -1; pointer-events: none; overflow: hidden;
+  }
+  .police-lights span {
+    position: absolute; top: -70px; width: 170px; height: 170px;
+    border-radius: 50%; filter: blur(55px);
+  }
+  .police-lights .p-red { left: 12%; background: #ff2d2d; animation: policeFlash 1.3s steps(1, jump-none) infinite; }
+  .police-lights .p-blue { right: 12%; background: #2d6bff; animation: policeFlash 1.3s steps(1, jump-none) infinite reverse; }
+  @keyframes policeFlash {
+    0%, 45% { opacity: 0.32; }
+    50%, 100% { opacity: 0.04; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .police-lights span { animation: none; opacity: 0.14; }
+  }
+
+  /* faint checkered racing-flag pattern (BeamNG theme) */
+  .hero-checker {
+    position: absolute; inset: 0; z-index: -1; pointer-events: none;
+    background-image: repeating-conic-gradient(var(--ink) 0% 25%, transparent 0% 50%);
+    background-size: 22px 22px;
+    opacity: 0.05;
+    mask-image: radial-gradient(ellipse 65% 60% at 88% 15%, black 0%, transparent 72%);
+    -webkit-mask-image: radial-gradient(ellipse 65% 60% at 88% 15%, black 0%, transparent 72%);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero-bg-glow span { animation: none; }
   }
   .hero-kicker {
     font-family: var(--mono); font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase;
@@ -312,7 +407,7 @@
   .creator-desc { color: var(--ink-dim); font-size: 14px; line-height: 1.65; }
 
   /* theme picker chips reuse .chip, just make them equal width on the row */
-  .theme-chip { flex: 1; text-align: center; }
+  .theme-chip { flex: 1; text-align: center; min-width: 120px; }
 
   /* ===== MOD / FEATURE grid used on Mods view ===== */
   .chip-row { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 22px; }
@@ -463,18 +558,26 @@
   }
   .upload-field textarea { min-height: 90px; resize: vertical; line-height: 1.45; }
 
-  /* neon green upload button */
+  /* neon green upload button — now theme-aware and richer */
   .upload-submit {
     width: 100%; font-weight: 800; font-size: 15px;
     font-family: var(--mono);
     letter-spacing: 0.06em; text-transform: uppercase;
-    color: #041a08; background: var(--neon-green);
-    padding: 15px; border-radius: 14px;
-    transition: transform 0.15s ease, opacity 0.15s ease, box-shadow 0.2s ease;
+    color: var(--accent-ink);
+    background: linear-gradient(135deg, var(--neon-green), var(--accent));
+    background-size: 200% 200%;
+    background-position: 0% 50%;
+    padding: 16px; border-radius: 14px;
+    position: relative; overflow: hidden;
+    transition: transform 0.15s ease, opacity 0.15s ease, box-shadow 0.25s ease, background-position 0.4s ease;
     box-shadow: var(--neon-green-glow);
   }
-  .upload-submit:hover { box-shadow: 0 0 12px rgba(57,255,20,0.9), 0 0 28px rgba(57,255,20,0.5); }
-  .upload-submit:active { transform: scale(0.97); }
+  .upload-submit:hover {
+    background-position: 100% 50%;
+    box-shadow: 0 0 16px rgba(57,255,20,0.9), 0 0 34px var(--accent-dim), 0 0 46px rgba(57,255,20,0.4);
+    transform: translateY(-1px);
+  }
+  .upload-submit:active { transform: scale(0.97) translateY(0); }
   .upload-submit[disabled] { opacity: 0.55; pointer-events: none; box-shadow: none; }
 
   .upload-progress {
@@ -489,7 +592,7 @@
   }
   .upload-error.show { display: block; }
 
-  /* file pick button (green neon) */
+  /* file pick button (theme-aware neon) */
   .file-pick-btn {
     display: inline-flex; align-items: center; gap: 10px;
     font-family: var(--mono); font-weight: 800; font-size: 13px;
@@ -497,13 +600,18 @@
     color: var(--neon-green);
     background: var(--neon-green-dim);
     border: 1.5px solid var(--neon-green);
-    padding: 12px 18px; border-radius: 12px;
-    transition: transform 0.15s ease, box-shadow 0.2s ease, background 0.15s ease;
+    padding: 13px 20px; border-radius: 12px;
+    transition: transform 0.15s ease, box-shadow 0.2s ease, background 0.15s ease, color 0.15s ease;
     box-shadow: var(--neon-green-glow);
   }
-  .file-pick-btn:hover { background: rgba(57,255,20,0.22); box-shadow: 0 0 14px rgba(57,255,20,0.8); }
+  .file-pick-btn:hover {
+    background: var(--neon-green);
+    color: var(--accent-ink);
+    box-shadow: 0 0 16px rgba(57,255,20,0.9), 0 0 32px var(--neon-green-dim);
+    transform: translateY(-1px);
+  }
   .file-pick-btn:active { transform: scale(0.96); }
-  .file-pick-btn svg { width: 16px; height: 16px; stroke: var(--neon-green); }
+  .file-pick-btn svg { width: 16px; height: 16px; stroke: currentColor; }
   .file-name-label { font-size: 13px; color: var(--ink-dim); margin-top: 8px; font-family: var(--mono); }
 
   /* generic list rows: admin users + mods management */
@@ -874,6 +982,10 @@
       <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 00.34 1.87l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.7 1.7 0 00-1.87-.34 1.7 1.7 0 00-1 1.55V21a2 2 0 11-4 0v-.09a1.7 1.7 0 00-1-1.55 1.7 1.7 0 00-1.87.34l-.06.06a2 2 0 11-2.83-2.83l.06-.06A1.7 1.7 0 004.6 15a1.7 1.7 0 00-1.55-1H3a2 2 0 110-4h.09A1.7 1.7 0 004.6 9a1.7 1.7 0 00-.34-1.87l-.06-.06a2 2 0 112.83-2.83l.06.06A1.7 1.7 0 009 4.6a1.7 1.7 0 001-1.55V3a2 2 0 114 0v.09a1.7 1.7 0 001 1.55 1.7 1.7 0 001.87-.34l.06-.06a2 2 0 112.83 2.83l-.06.06A1.7 1.7 0 0019.4 9a1.7 1.7 0 001.55 1H21a2 2 0 110 4h-.09a1.7 1.7 0 00-1.55 1z"/></svg>
       Настройки
     </button>
+    <button class="drawer-item" data-view="about">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+      О сайте
+    </button>
     <button class="drawer-item" data-view="creators">
       <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
       Создатели
@@ -901,6 +1013,16 @@
   <!-- HOME / ABOUT -->
   <section class="view active" id="view-home">
     <div class="hero">
+      <div class="hero-bg-glow"><span></span><span></span><span></span></div>
+      <div class="police-lights"><span class="p-red"></span><span class="p-blue"></span></div>
+      <div class="hero-checker"></div>
+      <svg class="hero-bg-icon" viewBox="0 0 24 24" fill="none" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="7" y="4" width="10" height="5" rx="2"/>
+        <line x1="12" y1="4" x2="12" y2="9"/>
+        <path d="M4 20l3.5-9h9L20 20"/>
+        <circle cx="8.5" cy="20" r="1.6"/>
+        <circle cx="15.5" cy="20" r="1.6"/>
+      </svg>
       <div class="hero-kicker">BeamNG.drive · моды</div>
       <h1>monte.shop</h1>
       <p>Мы делаем моды для BeamNG.drive: ливреи ДПС, мигалки, СГУ (спецсигналы), автомобили и винилы. Всё, что мы выпускаем, можно скачать в разделе «Моды» — бесплатно и без регистрации.</p>
@@ -930,11 +1052,23 @@
         <div class="studio-desc">Monte отвечает за сайт, тех.поддержку и код модов, Network — за 3D-модели, новые моды и фиксы. Подробнее о том, кто чем занимается — в разделе «Создатели».</div>
       </div>
     </div>
+
+    <button type="button" class="project-link" data-goto="about" style="margin-top:12px;">
+      <div class="project-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+      </div>
+      <div class="project-info">
+        <div class="project-name">О сайте</div>
+        <div class="project-sub">Зачем регистрироваться и что даёт профиль</div>
+      </div>
+      <svg class="project-arrow" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M7 7h10v10"/></svg>
+    </button>
   </section>
 
   <!-- MODS (public) -->
   <section class="view" id="view-mods">
     <h1>Моды</h1>
+
     <p class="sub">Все моды для BeamNG.drive, которые мы выпустили.</p>
 
     <div class="search-wrap">
@@ -960,6 +1094,8 @@
         <button class="chip theme-chip active" data-theme="dark">Синяя тёмная</button>
         <button class="chip theme-chip" data-theme="light">Синяя светлая</button>
         <button class="chip theme-chip" data-theme="beamng">BeamNG</button>
+        <button class="chip theme-chip" data-theme="crimson">Красная</button>
+        <button class="chip theme-chip" data-theme="obsidian">Чёрная</button>
       </div>
     </div>
 
@@ -1012,6 +1148,17 @@
       <div class="project-info">
         <div class="project-name">@hqqqndy_bot</div>
         <div class="project-sub">Telegram · бот</div>
+      </div>
+      <svg class="project-arrow" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M7 7h10v10"/></svg>
+    </a>
+
+    <a class="project-link" href="https://t.me/+f6MvSKx_7X43MGNi" target="_blank" rel="noopener">
+      <div class="project-icon">
+        <svg viewBox="0 0 24 24"><path d="M22 4L2 12.5l6 2M22 4L15 21l-7-6.5M22 4L8 14.5"/></svg>
+      </div>
+      <div class="project-info">
+        <div class="project-name">Официальный ТГК разработчика</div>
+        <div class="project-sub">Telegram · канал</div>
       </div>
       <svg class="project-arrow" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M7 7h10v10"/></svg>
     </a>
@@ -1165,6 +1312,26 @@
     </div>
   </section>
 
+  <!-- ABOUT -->
+  <section class="view" id="view-about">
+    <h1>О сайте</h1>
+    <p class="sub">Зачем этот сайт существует и что даёт регистрация.</p>
+
+    <div class="about-panel">
+      <div class="about-panel-title">Кратко о проекте</div>
+      <p class="about-panel-text">Данный сайт создан для размещения кастомных модов по тематике МВД для игры BeamNG.drive, разработанных специально для нашего сервера. Мы рекомендуем зарегистрироваться на сайте — это даст вам возможность загружать себе моды, кастомизировать свой профиль, получать роли (по решению основателей), публиковать записи на стене своего профиля, а также оставлять комментарии на стенах у других пользователей.</p>
+      <div class="about-tags">
+        <span class="about-tag">Моды МВД</span>
+        <span class="about-tag">BeamNG.drive</span>
+        <span class="about-tag">Регистрация</span>
+        <span class="about-tag">Профиль и роли</span>
+        <span class="about-tag">Стена и комментарии</span>
+      </div>
+    </div>
+
+    <div class="dev-credit">Сайт создан <b>by Monte</b>.</div>
+  </section>
+
   <!-- CREATORS -->
   <section class="view" id="view-creators">
     <h1>Создатели</h1>
@@ -1192,12 +1359,59 @@
 </main>
 
 <script>
+  // ---- click sound (soft, generated via WebAudio, no external file needed) ----
+  let __audioCtx = null;
+  function __getAudioCtx(){
+    if (!__audioCtx) {
+      try { __audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
+      catch (e) { __audioCtx = null; }
+    }
+    return __audioCtx;
+  }
+  function playClickSound(){
+    const ctx = __getAudioCtx();
+    if (!ctx) return;
+    if (ctx.state === 'suspended') ctx.resume();
+    const now = ctx.currentTime;
+
+    // soft, quiet water droplet — single quick "plink", filtered to
+    // round off the edges, no lingering tail.
+    const plink = ctx.createOscillator();
+    plink.type = 'sine';
+    plink.frequency.setValueAtTime(760, now);
+    plink.frequency.exponentialRampToValueAtTime(360, now + 0.05);
+
+    const plinkFilter = ctx.createBiquadFilter();
+    plinkFilter.type = 'lowpass';
+    plinkFilter.frequency.value = 1400;
+
+    const plinkGain = ctx.createGain();
+    plinkGain.gain.setValueAtTime(0.0001, now);
+    plinkGain.gain.linearRampToValueAtTime(0.035, now + 0.004);
+    plinkGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.09);
+
+    plink.connect(plinkFilter);
+    plinkFilter.connect(plinkGain);
+    plinkGain.connect(ctx.destination);
+
+    plink.start(now);
+    plink.stop(now + 0.1);
+  }
+  // play a soft click for any real button / link tap across the app
+  document.addEventListener('click', (e) => {
+    const el = e.target.closest('button, a.project-link, a.hero-cta, a.mod-dl, .drawer-item, .chip, .icon-btn');
+    if (el) playClickSound();
+  }, true);
+
   // ---- static UI: nav, drawer, theme (no Firebase needed) ----
   const burgerBtn = document.getElementById('burgerBtn');
   const drawer = document.getElementById('drawer');
   const overlay = document.getElementById('overlay');
   const views = document.querySelectorAll('.view');
   const drawerItems = document.querySelectorAll('.drawer-item');
+
+  const VIEW_NAMES = ['home', 'mods', 'settings', 'about', 'profile', 'creators'];
+  const LAST_VIEW_KEY = 'monteshop_lastView';
 
   function openDrawer(){
     drawer.classList.add('open');
@@ -1214,9 +1428,13 @@
   });
   overlay.addEventListener('click', closeDrawer);
 
-  function showView(name){
+  function showView(name, opts){
+    if (!VIEW_NAMES.includes(name)) name = 'home';
     views.forEach(v => v.classList.toggle('active', v.id === 'view-' + name));
     drawerItems.forEach(i => i.classList.toggle('active', i.dataset.view === name));
+    if (!opts || opts.remember !== false) {
+      try { localStorage.setItem(LAST_VIEW_KEY, name); } catch (e) {}
+    }
   }
 
   drawerItems.forEach(item => {
@@ -1242,6 +1460,16 @@
     if (other) other.style.display = 'none';
   }
 
+  // restore last view after refresh (instead of always jumping to home)
+  (function restoreLastView(){
+    let saved = null;
+    try { saved = localStorage.getItem(LAST_VIEW_KEY); } catch (e) {}
+    if (saved && VIEW_NAMES.includes(saved)) {
+      if (saved === 'profile') showOwnProfile();
+      showView(saved, { remember: false });
+    }
+  })();
+
   // ---- self link (points to this same site) ----
   const siteLink = document.getElementById('siteLink');
   const siteLinkSub = document.getElementById('siteLinkSub');
@@ -1250,22 +1478,28 @@
     siteLinkSub.textContent = window.location.hostname || window.location.href;
   }
 
-  // ---- theme picker (3 themes) ----
+  // ---- theme picker (5 themes, persisted across visits) ----
   const themePicker = document.getElementById('themePicker');
   const themeLabel = document.getElementById('themeLabel');
+  const THEME_KEY = 'monteshop_theme';
+  const THEME_CLASSES = ['light', 'beamng', 'crimson', 'obsidian'];
 
   const THEME_NAMES = {
     dark: 'Синяя тёмная',
     light: 'Синяя светлая',
-    beamng: 'BeamNG · чёрно-оранжевая'
+    beamng: 'BeamNG · чёрно-оранжевая',
+    crimson: 'Красная',
+    obsidian: 'Чёрная'
   };
 
-  function applyTheme(theme){
-    document.documentElement.classList.remove('light', 'beamng');
-    if (theme === 'light') document.documentElement.classList.add('light');
-    if (theme === 'beamng') document.documentElement.classList.add('beamng');
+  function applyTheme(theme, opts){
+    document.documentElement.classList.remove(...THEME_CLASSES);
+    if (THEME_CLASSES.includes(theme)) document.documentElement.classList.add(theme);
     themeLabel.textContent = THEME_NAMES[theme] || THEME_NAMES.dark;
     themePicker.querySelectorAll('.theme-chip').forEach(c => c.classList.toggle('active', c.dataset.theme === theme));
+    if (!opts || opts.remember !== false) {
+      try { localStorage.setItem(THEME_KEY, theme); } catch (e) {}
+    }
   }
 
   themePicker.addEventListener('click', (e) => {
@@ -1274,7 +1508,12 @@
     applyTheme(chip.dataset.theme);
   });
 
-  applyTheme('dark');
+  // restore saved theme, default to dark
+  (function restoreTheme(){
+    let saved = null;
+    try { saved = localStorage.getItem(THEME_KEY); } catch (e) {}
+    applyTheme((saved && THEME_NAMES[saved]) ? saved : 'dark', { remember: false });
+  })();
 
   function formatBytes(n){
     if (!n && n !== 0) return '';
